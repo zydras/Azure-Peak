@@ -34,7 +34,7 @@
 	subclass_stats = list(
 		STATKEY_SPD = 1,
 		STATKEY_PER = 1,
-		STATKEY_INT = 2,
+		STATKEY_INT = 2, //helps learning!
 	)
 	subclass_skills = list(
 		/datum/skill/magic/holy = SKILL_LEVEL_APPRENTICE,
@@ -107,7 +107,7 @@
 	category_tags = list(CTAG_SEXTON)
 	traits_applied = list(TRAIT_STEELHEARTED)
 	subclass_stats = list(
-		STATKEY_SPD = 2, //same statline as groundskeeper
+		STATKEY_SPD = 2,
 		STATKEY_PER = 1,
 	)
 	subclass_skills = list( 
@@ -134,7 +134,7 @@
 	belt = /obj/item/storage/belt/rogue/leather/black
 	neck = /obj/item/clothing/neck/roguetown/psicross/silver/necra //thematic
 	shoes = /obj/item/clothing/shoes/roguetown/shortboots
-	backl = /obj/item/storage/backpack/rogue/satchel/black
+	backl = /obj/item/storage/backpack/rogue/satchel
 	backr = /obj/item/rogueweapon/shovel/silver //Not pre-blessed, mind you
 	beltl = /obj/item/gun/ballistic/revolver/grenadelauncher/crossbow/slurbow //main tool of defense
 	beltr = /obj/item/quiver/bolts
