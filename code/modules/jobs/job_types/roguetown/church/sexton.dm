@@ -99,50 +99,55 @@
 
 /datum/advclass/sexton/gravetender
 	name = "Gravetender"
-	tutorial = "You are the gravetender for the local church, and are responsible for taking care of the graves north of town. Your duties range from digging pits and maintaing the graveyard to bringing the truly dead back into Necra's grasp. \
+	tutorial = "You are the gravetender for the local church, and are responsible for taking care of the graves north of town and for the retrieval of the truly dead back into Necra's grasp. \
 	Only the devout of Necra may take up the gravetender's mantle."
 	outfit = /datum/outfit/job/roguetown/sexton/gravetender
 	cmode_music = 'sound/music/combat_holy.ogg'
 	maximum_possible_slots = 1 //No combat role stacking, please?
 	category_tags = list(CTAG_SEXTON)
 	traits_applied = list(TRAIT_STEELHEARTED)
-	allowed_patrons = list(/datum/patron/divine/necra)
 	subclass_stats = list(
 		STATKEY_SPD = 2, //same statline as groundskeeper
 		STATKEY_PER = 1,
 	)
 	subclass_skills = list( 
-		/datum/skill/misc/climbing = SKILL_LEVEL_APPRENTICE,
+		/datum/skill/misc/climbing = SKILL_LEVEL_JOURNEYMAN,
 		/datum/skill/misc/sneaking = SKILL_LEVEL_APPRENTICE,
+		/datum/skill/misc/swimming = SKILL_LEVEL_APPRENTICE,
 		/datum/skill/misc/athletics = SKILL_LEVEL_APPRENTICE,
-		/datum/skill/combat/wrestling = SKILL_LEVEL_APPRENTICE,
-		/datum/skill/combat/crossbows = SKILL_LEVEL_APPRENTICE,
-		/datum/skill/magic/holy = SKILL_LEVEL_APPRENTICE,
+		/datum/skill/combat/wrestling = SKILL_LEVEL_NOVICE,
+		/datum/skill/combat/crossbows = SKILL_LEVEL_JOURNEYMAN,
+		/datum/skill/magic/holy = SKILL_LEVEL_NOVICE,
 	) //practically only combat skills. Exchanges all of its homesteading (and even reading!) for minor combat skills.
+
+/datum/outfit/job/roguetown/sexton/gravetender
+	allowed_patrons = list(/datum/patron/divine/necra)
+	has_loadout = TRUE
 
 /datum/outfit/job/roguetown/sexton/gravetender/pre_equip(mob/living/carbon/human/H)
 	..()
 	H.adjust_blindness(-3)
 	head = /obj/item/clothing/head/roguetown/inqhat/gravehat
 	armor = /obj/item/clothing/suit/roguetown/armor/leather/heavy/coat/gravecoat
-	gloves = /obj/item/clothing/gloves/roguetown/bandages
-	wrists = /obj/item/clothing/wrists/roguetown/bracers/leather/heavy
+	gloves = /obj/item/clothing/gloves/roguetown/angle/grenzelgloves
 	pants = /obj/item/clothing/under/roguetown/heavy_leather_pants
 	belt = /obj/item/storage/belt/rogue/leather/black
-	neck = /obj/item/clothing/neck/roguetown/psicross/necra
-	shoes = /obj/item/clothing/shoes/roguetown/boots
+	neck = /obj/item/clothing/neck/roguetown/psicross/silver/necra //thematic
+	shoes = /obj/item/clothing/shoes/roguetown/shortboots
 	backl = /obj/item/storage/backpack/rogue/satchel/black
-	backr = /obj/item/gun/ballistic/revolver/grenadelauncher/crossbow/slurbow //main tool of defense
-	beltl = /obj/item/rogueweapon/shovel/silver //Not pre-blessed, mind you
+	backr = /obj/item/rogueweapon/shovel/silver //Not pre-blessed, mind you
+	beltl = /obj/item/gun/ballistic/revolver/grenadelauncher/crossbow/slurbow //main tool of defense
 	beltr = /obj/item/quiver/bolts
 	backpack_contents = list(
+		/obj/item/burial_shroud = 2, //easier retrievals
 		/obj/item/storage/keyring/acolyte = 1,
 		/obj/item/flashlight/flare/torch/lantern = 1,
-		/obj/item/burial_shroud = 2, //easier retrieval
 	)
-
 	var/datum/devotion/C = new /datum/devotion(H, H.patron)
-	C.grant_miracles(H, cleric_tier = CLERIC_T1, passive_gain = CLERIC_REGEN_DEVOTEE, devotion_limit = CLERIC_REQ_1)	//Also capped to T1 miracles.
+	C.grant_miracles(H, cleric_tier = CLERIC_ORI, passive_gain = CLERIC_REGEN_MINOR, devotion_limit = CLERIC_REQ_0)	//Orison and Locate Dead only.
+	if(H.mind)
+		H.mind.AddSpell(new /obj/effect/proc_holder/spell/targeted/locate_dead) //Gives Grovetender no healing nor combat miracles. Fetch them bodies, boy!
+
 	if(H.mind)
 		SStreasury.give_money_account(ECONOMIC_LOWER_CLASS, H, "Church Funding.")
 		
