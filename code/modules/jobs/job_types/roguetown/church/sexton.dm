@@ -26,7 +26,7 @@
 /datum/advclass/sexton/groundskeeper
 	name = "Groundskeeper"
 	tutorial = "You are the groundskeeper for the local church, and are responsible for all the little odd-jobs that keep it running. \
-	Your duties range from digging graves and cleaning pews to managing the stores and conducting church business."
+	Your duties range from cleaning the floors and pews to managing the stores and conducting church business."
 	outfit = /datum/outfit/job/roguetown/sexton/groundskeeper
 	cmode_music = 'sound/music/combat_holy.ogg'
 	category_tags = list(CTAG_SEXTON)
@@ -38,14 +38,18 @@
 	)
 	subclass_skills = list(
 		/datum/skill/magic/holy = SKILL_LEVEL_APPRENTICE,
+		/datum/skill/misc/climbing = SKILL_LEVEL_APPRENTICE,
+		/datum/skill/misc/sneaking = SKILL_LEVEL_NOVICE,
 		/datum/skill/craft/sewing = SKILL_LEVEL_APPRENTICE,
 		/datum/skill/misc/reading = SKILL_LEVEL_NOVICE,
-		/datum/skill/misc/medicine = SKILL_LEVEL_NOVICE,
-		/datum/skill/craft/crafting = SKILL_LEVEL_NOVICE,
+		/datum/skill/misc/medicine = SKILL_LEVEL_APPRENTICE,
+		/datum/skill/craft/crafting = SKILL_LEVEL_APPRENTICE,
 		/datum/skill/labor/butchering = SKILL_LEVEL_NOVICE,
-		/datum/skill/craft/cooking = SKILL_LEVEL_NOVICE,
-		/datum/skill/labor/farming = SKILL_LEVEL_NOVICE,
-		/datum/skill/labor/fishing = SKILL_LEVEL_NOVICE,
+		/datum/skill/craft/cooking = SKILL_LEVEL_APPRENTICE,
+		/datum/skill/labor/farming = SKILL_LEVEL_APPRENTICE,
+		/datum/skill/labor/fishing = SKILL_LEVEL_APPRENTICE,
+		/datum/skill/craft/masonry = SKILL_LEVEL_NOVICE,
+		/datum/skill/craft/carpentry = SKILL_LEVEL_NOVICE, //potential for repairs
 	) //A little bit of every basic labor/craft skill, but zero combat skills
 
 /datum/outfit/job/roguetown/sexton/groundskeeper/pre_equip(mob/living/carbon/human/H)
@@ -105,7 +109,7 @@
 	cmode_music = 'sound/music/combat_holy.ogg'
 	maximum_possible_slots = 1 //No combat role stacking, please?
 	category_tags = list(CTAG_SEXTON)
-	traits_applied = list(TRAIT_STEELHEARTED)
+	traits_applied = list(TRAIT_OUTDOORSMAN) //often outside digging holes
 	subclass_stats = list(
 		STATKEY_SPD = 2,
 		STATKEY_PER = 1,
@@ -118,7 +122,7 @@
 		/datum/skill/combat/wrestling = SKILL_LEVEL_NOVICE,
 		/datum/skill/combat/crossbows = SKILL_LEVEL_JOURNEYMAN,
 		/datum/skill/magic/holy = SKILL_LEVEL_NOVICE,
-	) //practically only combat skills. Exchanges all of its homesteading (and even reading!) for minor combat skills.
+	) //practically only combat skills. Exchanges all of its homesteading (and even T1 Miracles!) for minor combat skills.
 
 /datum/outfit/job/roguetown/sexton/gravetender
 	allowed_patrons = list(/datum/patron/divine/necra)
