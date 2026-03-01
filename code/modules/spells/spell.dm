@@ -86,6 +86,8 @@ GLOBAL_LIST_INIT(spells, typesof(/obj/effect/proc_holder/spell)) //needed for th
 /obj/effect/proc_holder/Destroy()
 	if (action)
 		qdel(action)
+	if(mob_charge_effect)
+		QDEL_NULL(mob_charge_effect)
 	if(ranged_ability_user)
 		remove_ranged_ability()
 	return ..()
@@ -204,7 +206,6 @@ GLOBAL_LIST_INIT(spells, typesof(/obj/effect/proc_holder/spell)) //needed for th
 	var/miracle = FALSE
 	var/devotion_cost = 0
 	var/ignore_cockblock = FALSE //whether or not to ignore TRAIT_SPELLCOCKBLOCK
-
 	action_icon_state = "spell0"
 	action_icon = 'icons/mob/actions/roguespells.dmi'
 	action_background_icon_state = ""
@@ -422,8 +423,13 @@ GLOBAL_LIST_INIT(spells, typesof(/obj/effect/proc_holder/spell)) //needed for th
 	return TRUE
 
 /obj/effect/proc_holder/spell/proc/invocation(mob/user = usr)
-	if(!invocations || !invocations.len)
+	if(!invocations)
 		return
+	if(istext(invocations))
+		invocations = list(invocations)
+	if(!islist(invocations) || !invocations.len)
+		return
+
 	var/chosen_invocation = pick(invocations)
 	switch(invocation_type)
 		if("shout")
@@ -456,6 +462,10 @@ GLOBAL_LIST_INIT(spells, typesof(/obj/effect/proc_holder/spell)) //needed for th
 
 /obj/effect/proc_holder/spell/Destroy()
 	STOP_PROCESSING(SSfastprocess, src)
+	var/mob/owner = action?.owner
+	if(owner)
+		owner.mob_spell_list -= src
+		owner.mind?.spell_list -= src
 	qdel(action)
 	return ..()
 
@@ -474,12 +484,14 @@ GLOBAL_LIST_INIT(spells, typesof(/obj/effect/proc_holder/spell)) //needed for th
 
 /obj/effect/proc_holder/spell/proc/start_recharge()
 	var/old_recharge = recharge_time
-	if(ranged_ability_user && !is_cdr_exempt)
-		if(ranged_ability_user.STAINT > SPELL_SCALING_THRESHOLD)
-			var/diff = min(ranged_ability_user.STAINT, SPELL_POSITIVE_SCALING_THRESHOLD) - SPELL_SCALING_THRESHOLD
+	var/mob/living/user = ranged_ability_user || action?.owner
+
+	if(user && !is_cdr_exempt)
+		if(user.STAINT > SPELL_SCALING_THRESHOLD)
+			var/diff = min(user.STAINT, SPELL_POSITIVE_SCALING_THRESHOLD) - SPELL_SCALING_THRESHOLD
 			recharge_time = initial(recharge_time) - (initial(recharge_time) * diff * COOLDOWN_REDUCTION_PER_INT)
-		else if(ranged_ability_user.STAINT < SPELL_SCALING_THRESHOLD)
-			var/diff2 = SPELL_SCALING_THRESHOLD - ranged_ability_user.STAINT
+		else if(user.STAINT < SPELL_SCALING_THRESHOLD)
+			var/diff2 = SPELL_SCALING_THRESHOLD - user.STAINT
 			recharge_time = initial(recharge_time) + (initial(recharge_time) * (diff2 * COOLDOWN_REDUCTION_PER_INT))
 
 	// If the spell was fully charged before recalculation, keep it fully charged
@@ -609,8 +621,6 @@ GLOBAL_LIST_INIT(spells, typesof(/obj/effect/proc_holder/spell)) //needed for th
 
 	if(user.mmb_intent && user.mmb_intent.mob_light)
 		QDEL_NULL(user.mmb_intent.mob_light)
-	if(mob_charge_effect)
-		QDEL_NULL(mob_charge_effect)
 
 	START_PROCESSING(SSfastprocess, src) // ensure we always end up reprocessing after casting
 
@@ -779,6 +789,10 @@ GLOBAL_LIST_INIT(spells, typesof(/obj/effect/proc_holder/spell)) //needed for th
 	if(((!user.mind) || !(src in user.mind.spell_list)) && !(src in user.mob_spell_list))
 		return FALSE
 
+	// deny horsespellers
+	if(user.client && user.buckled)
+		return FALSE
+
 	if(!charge_check(user))
 		return FALSE
 
@@ -841,6 +855,38 @@ GLOBAL_LIST_INIT(spells, typesof(/obj/effect/proc_holder/spell)) //needed for th
 	user.visible_message(span_warning("A wreath of gentle light passes over [user]!"), span_info("I wreath myself in healing light!"))
 	user.adjustBruteLoss(-10)
 	user.adjustFireLoss(-10)
+
+/// Helper for non-projectile spells. Call before applying effects to a target.
+/// Returns TRUE if the target's Guard or parry buffer deflected the spell (skip this target).
+/// Returns FALSE if the spell should proceed normally.
+/// Usage in cast(): if(spell_guard_check(L)) continue
+/obj/effect/proc_holder/spell/proc/spell_guard_check(mob/living/target, no_message = FALSE)
+	if(!isliving(target))
+		return FALSE
+	// Check for active guard
+	var/datum/status_effect/buff/clash/guard = target.has_status_effect(/datum/status_effect/buff/clash)
+	if(guard)
+		if(isarcyne(target))
+			if(!no_message)
+				target.visible_message(span_warning("[target] deflects [name] with a reactive ward!"))
+				to_chat(target, span_notice("My ward deflects the incoming spell!"))
+			playsound(get_turf(target), pick('sound/combat/parry/shield/magicshield (1).ogg', 'sound/combat/parry/shield/magicshield (2).ogg', 'sound/combat/parry/shield/magicshield (3).ogg'), 100)
+		else
+			if(!no_message)
+				target.visible_message(span_warning("[target] deflects [name]!"))
+				to_chat(target, span_notice("My guard deflects the incoming spell!"))
+			var/obj/item/held = target.get_active_held_item()
+			if(held?.parrysound)
+				playsound(get_turf(target), pick(held.parrysound), 100)
+			else
+				playsound(get_turf(target), pick(target.parry_sound), 100)
+		target.apply_status_effect(/datum/status_effect/buff/spell_parry_buffer)
+		target.remove_status_effect(/datum/status_effect/buff/clash)
+		return TRUE
+	// Check for parry buffer (from a recent deflection) — silent, no chat spam for multi-hit spells
+	if(target.has_status_effect(/datum/status_effect/buff/spell_parry_buffer))
+		return TRUE
+	return FALSE
 
 #undef TARGET_CLOSEST
 #undef TARGET_RANDOM
