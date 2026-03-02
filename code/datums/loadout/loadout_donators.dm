@@ -75,6 +75,30 @@
 	ckeywhitelist = list("1ceres")
 	sort_category = "Donator"
 
+/datum/loadout_item/donator_zycuirass
+	name = "Donator Kit - Damaged Iron Mailled Hauberk"
+	path = /obj/item/enchantingkit/zycuirass
+	ckeywhitelist = list("1ceres")
+	sort_category = "Donator"
+
+/datum/loadout_item/donator_zyloincloth
+	name = "Donator Kit - Padded Loincloth & Bra"
+	path = /obj/item/enchantingkit/zyloincloth
+	ckeywhitelist = list("1ceres")
+	sort_category = "Donator"
+
+/datum/loadout_item/donator_zyironthorn
+	name = "Donator Kit - Iron thorns"
+	path = /obj/item/enchantingkit/zyironthorn
+	ckeywhitelist = list("1ceres")
+	sort_category = "Donator"
+
+/datum/loadout_item/donator_zygreataxe
+	name = "Donator Kit - Damaged Greataxe"
+	path = /obj/item/enchantingkit/zygreataxe
+	ckeywhitelist = list("1ceres")
+	sort_category = "Donator"
+
 /datum/loadout_item/donator_eiren
 	name = "Donator Kit - Regret"
 	path = /obj/item/enchantingkit/eiren
@@ -184,7 +208,7 @@
 /datum/loadout_item/donator_dakken
 	name = "Donator Kit - Armoured Avantyne Barbute"
 	path = /obj/item/enchantingkit/dakken_zizhelm
-	ckeywhitelist = list("dakken12") 
+	ckeywhitelist = list("dakken12")
 	sort_category = "Donator"
 
 /datum/loadout_item/donator_koruu/glaive

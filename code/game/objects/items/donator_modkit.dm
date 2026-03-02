@@ -129,6 +129,27 @@
 	target_items = list(/obj/item/clothing/suit/roguetown/armor/chainmail/hauberk/iron)
 	result_item = /obj/item/clothing/suit/roguetown/armor/chainmail/hauberk/iron/zydrasiconosash
 
+//Zydras donator items - Ironclad Baddie
+/obj/item/enchantingkit/zyloincloth
+	name = "Padded Loincloth morphing elixir"
+	target_items = list(/obj/item/clothing/suit/roguetown/armor/gambeson/heavy)
+	result_item = /obj/item/clothing/suit/roguetown/armor/gambeson/heavy/zyloincloth
+
+/obj/item/enchantingkit/zycuirass
+	name = "Iron Mailled Hauberk morphing elixir"
+	target_items = list(/obj/item/clothing/suit/roguetown/armor/chainmail/hauberk/iron/heavy)
+	result_item = /obj/item/clothing/suit/roguetown/armor/chainmail/hauberk/iron/heavy/zycuirass
+
+/obj/item/enchantingkit/zyironthorn
+	name = "Iron Thorns morphing elixir"
+	target_items = list(/obj/item/clothing/head/roguetown/helmet/kettle/iron)
+	result_item = /obj/item/clothing/head/roguetown/helmet/kettle/iron/zyironthorn
+
+/obj/item/enchantingkit/zygreataxe
+	name = "Damaged Greataxe morphing elixir"
+	target_items = list(/obj/item/rogueweapon/greataxe)
+	result_item = /obj/item/rogueweapon/greataxe/zygreataxe
+
 //Eiren - Zweihander and sabres
 /obj/item/enchantingkit/eiren
 	name = "'Regret' morphing elixir"
@@ -201,7 +222,7 @@
 /obj/item/enchantingkit/dakken_zizhelm
 	name = "'armoured avantyne barbute' morphing elixir"
 	target_items = list(
-		/obj/item/clothing/head/roguetown/helmet/heavy/knight/armet, 
+		/obj/item/clothing/head/roguetown/helmet/heavy/knight/armet,
 		/obj/item/clothing/head/roguetown/helmet/bascinet/pigface/hounskull
 	)
 	result_item = /obj/item/clothing/head/roguetown/helmet/bascinet/pigface/hounskull/dakken

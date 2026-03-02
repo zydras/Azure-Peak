@@ -124,11 +124,46 @@
 	name = "toper-iron crown"
 	desc = "A iron crown with a toper studded into it. Any blow landing upon the wearer's head seems to divert to the gem."
 	flags_inv = null //It's a crown, it ain't hiding anything
-	flags_cover = null 
+	flags_cover = null
 	icon_state = "zydras_iconocrown"
 	item_state = "zydras_iconocrown"
 	icon = 'icons/clothing/donor_clothes.dmi'
 	mob_overlay_icon = 'icons/clothing/onmob/donor_clothes.dmi'
+
+//Zydras donator items - ironclad baddie
+/obj/item/clothing/suit/roguetown/armor/chainmail/hauberk/iron/heavy/zycuirass
+	name = "damaged iron mailled hauberk"
+	desc = "An aged piece of damaged mailled hauberk, with only its skirt and a shoulder remaining. It glimmers with a reddish hue."
+	icon = 'icons/clothing/donor_clothes.dmi'
+	mob_overlay_icon = 'icons/clothing/onmob/donor_clothes.dmi'
+	icon_state = "zy_cuirass"
+	item_state = "zy_cuirass"
+	sleevetype = "zy_cuirass"
+	sleeved = 'icons/clothing/onmob/donor_sleeves_armor.dmi'
+
+/obj/item/clothing/suit/roguetown/armor/gambeson/heavy/zyloincloth
+	name = "padded loincloth & bra"
+	desc = "A fairly well-padded loincloth and bra, protecting the important bits."
+	icon = 'icons/clothing/donor_clothes.dmi'
+	mob_overlay_icon = 'icons/clothing/onmob/donor_clothes.dmi'
+	icon_state = "zy_loincloth"
+	item_state = "zy_loincloth"
+	sleevetype = "zy_loincloth"
+	sleeved = 'icons/clothing/onmob/donor_sleeves_armor.dmi'
+
+/obj/item/clothing/head/roguetown/helmet/kettle/iron/zyironthorn
+	name = "iron thorns"
+	desc = "A frailer replica of Psydonic disciples' iconic blacksteel thorns, in the first place."
+	icon = 'icons/clothing/donor_clothes.dmi'
+	mob_overlay_icon = 'icons/clothing/onmob/donor_clothes.dmi'
+	icon_state = "zy_ironthorn"
+
+/obj/item/rogueweapon/greataxe/zygreataxe
+	name = "damaged greataxe"
+	desc = "This Greataxe has seen better days. It will see worse ones, by the looks of its wielder."
+	icon = 'icons/obj/items/donor_weapons_64.dmi'
+	icon_state = "zy_greataxe"
+
 
 
 //Eiren's donator items - zweihander and sabres
@@ -201,7 +236,7 @@
 	icon = 'icons/obj/items/donor_weapons_64.dmi'
 
 /obj/item/clothing/head/roguetown/duelhat/pretzel
-	name = "rethrifted gravedigger's hat" 
+	name = "rethrifted gravedigger's hat"
 	desc = "A gravetender's dark leather slouch, refitted with a golden dragon-sigil. Who needs a steel skullcap when you have dumb luck? <br> \
 	\"You ever feel like nothin' good was ever gonna happen to you?\" <br> \
 	\"Yeah, and nothin' did. So what?\""
