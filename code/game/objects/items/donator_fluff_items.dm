@@ -132,7 +132,7 @@
 
 //Zydras donator items - ironclad baddie
 /obj/item/clothing/suit/roguetown/armor/chainmail/hauberk/iron/heavy/zycuirass
-	name = "damaged iron mailled hauberk"
+	name = "iron gardbrace and fauld"
 	desc = "An aged piece of damaged mailled hauberk, with only its skirt and a shoulder remaining. It glimmers with a reddish hue."
 	icon = 'icons/clothing/donor_clothes.dmi'
 	mob_overlay_icon = 'icons/clothing/onmob/donor_clothes.dmi'
@@ -153,14 +153,14 @@
 
 /obj/item/clothing/head/roguetown/helmet/kettle/iron/zyironthorn
 	name = "iron thorns"
-	desc = "A frailer replica of Psydonic disciples' iconic blacksteel thorns, in the first place."
+	desc = "A frailer replica of Psydonic disciples' iconic blacksteel thorns."
 	icon = 'icons/clothing/donor_clothes.dmi'
 	mob_overlay_icon = 'icons/clothing/onmob/donor_clothes.dmi'
 	icon_state = "zy_ironthorn"
 
 /obj/item/rogueweapon/greataxe/zygreataxe
-	name = "damaged greataxe"
-	desc = "This Greataxe has seen better days. It will see worse ones, by the looks of its wielder."
+	name = "Bourreau"
+	desc = "This Greataxe has seen better days. It will see worse ones, by the looks of its original wielder."
 	icon = 'icons/obj/items/donor_weapons_64.dmi'
 	icon_state = "zy_greataxe"
 

@@ -136,7 +136,7 @@
 	result_item = /obj/item/clothing/suit/roguetown/armor/gambeson/heavy/zyloincloth
 
 /obj/item/enchantingkit/zycuirass
-	name = "Iron Mailled Hauberk morphing elixir"
+	name = "Iron Gardbrace and Fauld morphing elixir"
 	target_items = list(/obj/item/clothing/suit/roguetown/armor/chainmail/hauberk/iron/heavy)
 	result_item = /obj/item/clothing/suit/roguetown/armor/chainmail/hauberk/iron/heavy/zycuirass
 
@@ -146,7 +146,7 @@
 	result_item = /obj/item/clothing/head/roguetown/helmet/kettle/iron/zyironthorn
 
 /obj/item/enchantingkit/zygreataxe
-	name = "Damaged Greataxe morphing elixir"
+	name = "Bourreau morphing elixir"
 	target_items = list(/obj/item/rogueweapon/greataxe)
 	result_item = /obj/item/rogueweapon/greataxe/zygreataxe
 
