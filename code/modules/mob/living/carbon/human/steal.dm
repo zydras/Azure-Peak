@@ -4,7 +4,7 @@
 	var/mob/living/carbon/human/user_human = user
 	var/mob/living/carbon/human/target_human = target
 	var/thiefskill = user.get_skill_level(/datum/skill/misc/stealing) + (has_world_trait(/datum/world_trait/matthios_fingers) ? 1 : 0)
-	var/stealroll = roll("[thiefskill]d4")
+	var/stealroll = roll("d4")
 	var/targetperception = (target_human.STAPER)
 	var/list/stealablezones = list("chest", "neck", "groin")
 	var/list/stealpos = list()
