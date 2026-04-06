@@ -79,7 +79,7 @@
 
 /obj/item/enchantingkit/zydrasgreataxe
 	name = "Donator Kit - Bourreau"
-	path = /obj/item/enchantingkit/zydrasiconocrown
+	path = /obj/item/enchantingkit/zydrasgreataxe
 	ckeywhitelist = list("1ceres")
 
 /datum/loadout_item/donator/eiren
