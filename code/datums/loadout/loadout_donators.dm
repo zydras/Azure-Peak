@@ -77,7 +77,7 @@
 	path = /obj/item/enchantingkit/zydrashauberk
 	ckeywhitelist = list("1ceres")
 
-/obj/item/enchantingkit/zydrasgreataxe
+/datum/loadout_item/donator/zydrasgreataxe
 	name = "Donator Kit - Bourreau"
 	path = /obj/item/enchantingkit/zydrasgreataxe
 	ckeywhitelist = list("1ceres")
