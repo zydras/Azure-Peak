@@ -70,6 +70,12 @@
 	name = "Drake, Wide"
 	icon_state = "drake_wide"
 
+/datum/sprite_accessory/horns/messenger
+	name = "Winged Messenger"
+	icon_state = "messenger"
+	default_colors = list("#EAEAEA")
+	relevant_layers = list(BODY_ADJ_LAYER, BODY_FRONT_LAYER)
+
 /datum/sprite_accessory/horns/knight
 	name = "Knight"
 	icon_state = "knight"
