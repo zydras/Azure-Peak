@@ -512,4 +512,5 @@
 /datum/sprite_accessory/snout/masked
 	name = "Winged Veil"
 	icon_state = "masked"
+	color_key_name = "Veil"
 	relevant_layers = list(BODY_ADJ_LAYER, BODY_FRONT_LAYER)

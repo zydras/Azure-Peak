@@ -73,8 +73,26 @@
 /datum/sprite_accessory/horns/messenger
 	name = "Winged Messenger"
 	icon_state = "messenger"
-	default_colors = list("#EAEAEA")
+	color_keys = 2
+	color_key_names = list("Wings", "Tips")
+	default_colors = list("#EAEAEA", "#EAEAEA")
 	relevant_layers = list(BODY_ADJ_LAYER, BODY_FRONT_LAYER)
+
+/datum/sprite_accessory/horns/rmessenger
+	name = "One-Winged Messenger (Right)"
+	icon_state = "rmessenger"
+	color_keys = 2
+	color_key_names = list("Wings", "Tips")
+	default_colors = list("#EAEAEA", "#EAEAEA")
+	relevant_layers = list(BODY_ADJ_LAYER, BODY_FRONT_LAYER, BODY_BEHIND_LAYER)
+
+/datum/sprite_accessory/horns/lmessenger
+	name = "One-Winged Messenger (Left)"
+	icon_state = "lmessenger"
+	color_keys = 2
+	color_key_names = list("Wings", "Tips")
+	default_colors = list("#EAEAEA", "#EAEAEA")
+	relevant_layers = list(BODY_ADJ_LAYER, BODY_FRONT_LAYER, BODY_BEHIND_LAYER)
 
 /datum/sprite_accessory/horns/knight
 	name = "Knight"
