@@ -194,6 +194,13 @@
 	if(istype(active_spell) && (active_spell.currently_charging || active_spell.charged))
 		to_chat(src, span_warning("I can't guard while channeling a spell!"))
 		return FALSE
+
+	if(is_swinging(disrupt_only = TRUE))
+		return FALSE
+
+	if(has_status_effect(/datum/status_effect/debuff/exposed))
+		return FALSE
+
 	apply_status_effect(/datum/status_effect/buff/clash)
 	return TRUE
 
@@ -296,7 +303,7 @@
 	return highest_ac
 
 /mob/living/carbon/human/proc/process_tempo_attack(mob/living/carbon/attacker)
-	if(iscarbon(attacker) && attacker.mind && attacker != src)
+	if(iscarbon(attacker) && attacker != src) //! && attacker.mind
 		if(length(tempo_attackers) <= TEMPO_CAP || (attacker in tempo_attackers))	//This list auto-culls so we don't need to flood it. If you're fighting 7 dudes at the same time you've got other problems.
 			var/newtime
 			var/att_count = length(tempo_attackers)
