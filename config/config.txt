@@ -519,7 +519,7 @@ RESUME_AFTER_INITIALIZATIONS
 ROUNDS_UNTIL_HARD_RESTART 0
 
 ## Enable automatic profiling - Byond 513.1506 and newer only.
-#AUTO_PROFILE
+AUTO_PROFILE
 
 ## Determines the interval between each saved profiler snapshot (in deciseconds).
 #PROFILER_INTERVAL 3000

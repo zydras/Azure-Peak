@@ -654,4 +654,5 @@ GLOBAL_REAL(Master, /datum/controller/master) = new
 	if(REALTIMEOFDAY - last_profiled <= delay)
 		return FALSE
 	last_profiled = REALTIMEOFDAY
+	log_world("MC: Emergency profile dump (avg drift [round(tickdrift,0.1)] ticks) at world.time [world.time]")
 	SSprofiler.DumpFile(allow_yield = FALSE)
