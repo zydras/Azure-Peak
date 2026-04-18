@@ -514,6 +514,8 @@
 
 /datum/config_entry/flag/auto_profile
 
+/datum/config_entry/flag/profile_clear_on_dump
+
 /datum/config_entry/number/profiler_interval
 	default = 300 SECONDS
 
