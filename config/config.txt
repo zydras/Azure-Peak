@@ -523,8 +523,7 @@ AUTO_PROFILE
 
 ## Clear the profile buffer after each dump. Each file then contains only the activity
 ## since the previous dump (window mode), at the cost of not having a single cumulative round file.
-## TEMPORARY: currently on while we evaluate whether windowed dumps are more useful for live triage.
-## Comment out to revert to TG-style cumulative-round dumps.
+## Comment out to revert to cumulative-round dumps.
 PROFILE_CLEAR_ON_DUMP
 
 ## Determines the interval between each saved profiler snapshot (in deciseconds).
