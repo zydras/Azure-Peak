@@ -154,10 +154,10 @@
 #define IMPLEMENT_TIER_GREATER 2
 #define IMPLEMENT_TIER_GRAND   3
 
-// Fraction of a spell's resource cost that the arcyne refund buff returns over 20 seconds.
+// Fraction of a spell's resource cost that the Residual Focus buff returns over 20 seconds.
 #define IMPLEMENT_REFUND_LESSER  0.20
-#define IMPLEMENT_REFUND_GREATER 0.25
-#define IMPLEMENT_REFUND_GRAND   0.30
+#define IMPLEMENT_REFUND_GREATER 0.275
+#define IMPLEMENT_REFUND_GRAND   0.35
 
 // Lightning Specific constants
 #define LIGHTNING_ADAPTATION_COOLDOWN 15 SECONDS
