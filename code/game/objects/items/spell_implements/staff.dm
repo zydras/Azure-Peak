@@ -5,7 +5,7 @@
 	icon = 'icons/obj/items/staffs.dmi'
 	icon_state = "topazstaff"
 	implement_tier = IMPLEMENT_TIER_LESSER
-	implement_multiplier = IMPLEMENT_MULT_LESSER
+	implement_refund = IMPLEMENT_REFUND_LESSER
 	resistance_flags = FIRE_PROOF
 	possible_item_intents = list(SPEAR_BASH)
 	gripped_intents = list(SPEAR_BASH, /datum/intent/mace/smash/wood)
@@ -18,7 +18,7 @@
 	desc = "A mage's staff crowned with a quality focus-gem. The arcyne resonance is palpable, strengthening the wielder's staple spells considerably."
 	icon_state = "emeraldstaff"
 	implement_tier = IMPLEMENT_TIER_GREATER
-	implement_multiplier = IMPLEMENT_MULT_GREATER
+	implement_refund = IMPLEMENT_REFUND_GREATER
 	max_integrity = 150
 	sellprice = 42
 
@@ -28,14 +28,14 @@
 	desc = "A masterwork staff set with a gem of extraordinary quality. Arcyne power flows through it like a river, devastating in the hands of a skilled mage."
 	icon_state = "diamondstaff"
 	implement_tier = IMPLEMENT_TIER_GRAND
-	implement_multiplier = IMPLEMENT_MULT_GRAND
+	implement_refund = IMPLEMENT_REFUND_GRAND
 	max_integrity = 200
 	sellprice = 121
 
 /obj/item/rogueweapon/woodstaff/implement/examine(mob/user)
 	. = ..()
-	if(implement_multiplier)
-		. += span_notice("This implement empowers staple spells by [round((implement_multiplier - 1) * 100)]% when held.")
+	if(implement_refund)
+		. += span_notice("When held while casting, this implement leaves behind Residual Focus, returning [round(implement_refund * 100)]% of the spell's resource cost as energy over 20 seconds.")
 
 
 /datum/intent/magos_electrocute

@@ -20,7 +20,7 @@
 	possible_item_intents = list(SPEAR_BASH)
 	sellprice = 34
 	implement_tier = IMPLEMENT_TIER_LESSER
-	implement_multiplier = IMPLEMENT_MULT_LESSER
+	implement_refund = IMPLEMENT_REFUND_LESSER
 
 /obj/item/rogueweapon/wand/greater
 	base_implement_name = "greater wand"
@@ -30,7 +30,7 @@
 	max_integrity = 100
 	sellprice = 42
 	implement_tier = IMPLEMENT_TIER_GREATER
-	implement_multiplier = IMPLEMENT_MULT_GREATER
+	implement_refund = IMPLEMENT_REFUND_GREATER
 
 /obj/item/rogueweapon/wand/grand
 	base_implement_name = "grand wand"
@@ -40,7 +40,7 @@
 	max_integrity = 120
 	sellprice = 121
 	implement_tier = IMPLEMENT_TIER_GRAND
-	implement_multiplier = IMPLEMENT_MULT_GRAND
+	implement_refund = IMPLEMENT_REFUND_GRAND
 
 /obj/item/rogueweapon/wand/getonmobprop(tag)
 	. = ..()
@@ -53,6 +53,6 @@
 
 /obj/item/rogueweapon/wand/examine(mob/user)
 	. = ..()
-	if(implement_multiplier)
-		. += span_notice("This implement empowers staple spells by [round((implement_multiplier - 1) * 100)]% when held.")
+	if(implement_refund)
+		. += span_notice("When held while casting, this implement leaves behind Residual Focus, returning [round(implement_refund * 100)]% of the spell's resource cost as energy over 20 seconds.")
 

@@ -164,9 +164,6 @@
 	var/charge_target_time = 0
 	/// Whether the spell is currently charged, for cases where you want to keep casting after the initial charge (projectiles).
 	var/charged = FALSE
-	/// If TRUE, this spell benefits from implement damage bonus when the caster holds a spell implement.
-	// Only poke spells (low CD staple spammable projectiles) should ever get this.
-	var/is_implement_scaled_spell = FALSE
 	/// The school this spell attunes to. If set, holding a spell implement while casting will attune it (glow + name).
 	/// Use ASPECT_NAME defines (e.g. ASPECT_NAME_PYROMANCY). Null means no attunement.
 	var/attunement_school
@@ -504,7 +501,7 @@
 		if(istype(held, /obj/item/rogueweapon/shield))
 			continue
 		var/obj/item/rogueweapon/W = held
-		if(W.implement_multiplier)
+		if(W.implement_refund)
 			continue
 		return TRUE
 	if(H.has_status_effect(/datum/status_effect/recent_weapon))
@@ -749,9 +746,12 @@
 		// The entire spell is done, start the actual cooldown at its adjusted duration
 		StartCooldown(get_adjusted_cooldown())
 
+	var/spent = 0
 	if(!(precast_result & SPELL_NO_IMMEDIATE_COST))
 		// Invoke the base cost of the spell based on primary/secondary resource types
-		invoke_cost()
+		spent = invoke_cost()
+
+	apply_residual_focus(spent)
 
 	weapon_penalty_active = FALSE
 
@@ -1186,6 +1186,8 @@
 	return TRUE
 
 /// Charge the owner with the cost of the spell. Drains both primary and secondary resources.
+/// Returns the sum of stamina + energy spent (devotion/blood are excluded — the return
+/// feeds the implement refund pool, which only tracks the two mundane resource bars).
 /datum/action/cooldown/spell/proc/invoke_cost()
 	if(!owner)
 		return
@@ -1193,10 +1195,42 @@
 	var/primary_spent = invoke_resource_cost(primary_resource_type, primary_resource_cost)
 	var/secondary_spent = invoke_resource_cost(secondary_resource_type, secondary_resource_cost)
 
-	var/total = (primary_spent || 0) + (secondary_spent || 0)
-	if(total <= 0)
+	var/refundable_total = 0
+	if(primary_resource_type == SPELL_COST_STAMINA || primary_resource_type == SPELL_COST_ENERGY)
+		refundable_total += (primary_spent || 0)
+	if(secondary_resource_type == SPELL_COST_STAMINA || secondary_resource_type == SPELL_COST_ENERGY)
+		refundable_total += (secondary_spent || 0)
+	return refundable_total
+
+/// Returns the highest-tier implement currently held by the user, or null.
+/datum/action/cooldown/spell/proc/get_held_implement(mob/user)
+	if(!ishuman(user))
+		return null
+	var/mob/living/carbon/human/H = user
+	var/obj/item/rogueweapon/best
+	for(var/obj/item/held in list(H.get_active_held_item(), H.get_inactive_held_item()))
+		if(!istype(held, /obj/item/rogueweapon))
+			continue
+		var/obj/item/rogueweapon/W = held
+		if(W.implement_refund > (best ? best.implement_refund : 0))
+			best = W
+	return best
+
+/// Apply or extend the residual focus buff based on how much stamina/energy this cast drained
+/// and which implement (if any) the caster is holding. No implement = no refund.
+/datum/action/cooldown/spell/proc/apply_residual_focus(refundable_spent)
+	if(refundable_spent <= 0)
 		return
-	return total
+	var/obj/item/rogueweapon/implement = get_held_implement(owner)
+	if(!implement?.implement_refund)
+		return
+	if(!isliving(owner))
+		return
+	var/pool = refundable_spent * implement.implement_refund
+	if(pool <= 0)
+		return
+	var/mob/living/L = owner
+	L.apply_status_effect(/datum/status_effect/buff/residual_focus, pool)
 
 /// Drain a specific resource type by the given base cost.
 /// INT scaling applies to stamina and energy. Devotion uses raw cost.
