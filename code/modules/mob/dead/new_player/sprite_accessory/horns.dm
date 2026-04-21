@@ -94,6 +94,12 @@
 	default_colors = list("#EAEAEA", "#EAEAEA")
 	relevant_layers = list(BODY_ADJ_LAYER, BODY_FRONT_LAYER, BODY_BEHIND_LAYER)
 
+/datum/sprite_accessory/horns/chiroptera
+	name = "Chiroptera Wings"
+	icon_state = "chiroptera"
+	color_key_name = "Wings"
+	relevant_layers = list(BODY_ADJ_LAYER, BODY_FRONT_LAYER)
+
 /datum/sprite_accessory/horns/knight
 	name = "Knight"
 	icon_state = "knight"
