@@ -163,6 +163,7 @@
 /datum/virtue/combat/guarded/apply_to_human(mob/living/carbon/human/recipient)
 	. = ..()
 	recipient.verbs += /mob/living/carbon/human/proc/toggle_descriptors
+	recipient.verbs += /mob/living/carbon/human/proc/emote_ffsalute
 
 
 /datum/virtue/combat/rotcured
