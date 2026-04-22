@@ -100,6 +100,14 @@
 	color_key_name = "Wings"
 	relevant_layers = list(BODY_ADJ_LAYER, BODY_FRONT_LAYER)
 
+/datum/sprite_accessory/horns/nightstalker
+	name = "Nightstalker Wings"
+	icon_state = "nightstalker"
+	color_keys = 2
+	color_key_names = list("Wings", "Tips")
+	default_colors = list("#555555", "#B41919")
+	relevant_layers = list(BODY_ADJ_LAYER, BODY_FRONT_LAYER)
+
 /datum/sprite_accessory/horns/knight
 	name = "Knight"
 	icon_state = "knight"
