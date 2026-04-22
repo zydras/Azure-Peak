@@ -117,6 +117,22 @@ SUBSYSTEM_DEF(droning)
 		shouldskip = TRUE
 	if(listener?.mob.cmode)
 		shouldskip = TRUE
+	if(listener && listener.prefs && listener.prefs.stopdroning)
+		if(listener.droning_sound)
+			var/sound/sound_killer = sound()
+			sound_killer.channel = listener.droning_sound.channel
+			sound_killer.volume = listener.prefs.musicvol
+
+			while(sound_killer.volume > 0)
+				sound_killer.volume = max(sound_killer.volume - 5, 0)
+				sound_killer.status = SOUND_UPDATE
+				SEND_SOUND(listener, sound_killer)
+				sleep(1)
+
+		listener.droning_sound = null
+		listener.last_droning_sound = null
+		return
+
 	if(shouldskip)
 		var/sound/droning = sound(pick(area_player.droning_sound_current), area_player.droning_repeat, area_player.droning_wait, area_player.droning_channel, listener?.prefs.musicvol)
 
