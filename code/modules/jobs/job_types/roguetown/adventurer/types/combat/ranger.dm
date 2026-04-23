@@ -216,7 +216,7 @@
 		)
 	if(H.mind)
 		var/weapons = list("Axe","Sword")
-		var/weapon_choice = input(H, "Choose your weapon.", "TAKE UP ARMS")
+		var/weapon_choice = input(H, "Choose your weapon.", "TAKE UP ARMS") as anything in weapons
 			if("Axe")
 				H.adjust_skillrank_up_to(/datum/skill/combat/axes = SKILL_LEVEL_JOURNEYMAN, TRUE)
 				beltr = /obj/item/rogueweapon/stoneaxe/woodcut
