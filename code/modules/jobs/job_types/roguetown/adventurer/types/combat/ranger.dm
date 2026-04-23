@@ -224,8 +224,8 @@
 				H.adjust_skillrank_up_to(/datum/skill/combat/swords = SKILL_LEVEL_JOURNEYMAN, TRUE)
 				beltr = /obj/item/rogueweapon/sword/short/messer/iron
 		var/altweapons = list("Recurve Bow","Billhook","Sling","Crossbow")
-		var/weapon_choice = input(H, "Choose your additional weapon.", "TAKE UP ARMS") as anything in altweapons
-		switch(weapon_choice)
+		var/altweapon_choice = input(H, "Choose your additional weapon.", "TAKE UP ARMS") as anything in altweapons
+		switch(altweapon_choice)
 			if("Recurve Bow")
 				H.adjust_skillrank_up_to(/datum/skill/combat/bows, SKILL_LEVEL_JOURNEYMAN, TRUE)
 				backr = /obj/item/gun/ballistic/revolver/grenadelauncher/bow/recurve
