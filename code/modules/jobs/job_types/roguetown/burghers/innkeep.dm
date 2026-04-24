@@ -81,6 +81,7 @@
 				ADD_TRAIT(H, TRAIT_DODGEEXPERT, TRAIT_GENERIC)
 				ADD_TRAIT(H, TRAIT_SEEPRICES_SHITTY, TRAIT_GENERIC)//a little thievery went a long way
 				H.adjust_skillrank_up_to(/datum/skill/combat/knives, SKILL_LEVEL_JOURNEYMAN, TRUE)
+				H.adjust_skillrank_up_to(/datum/skill/misc/climbing, SKILL_LEVEL_JOURNEYMAN, TRUE)
 				H.adjust_skillrank_up_to(/datum/skill/misc/stealing, SKILL_LEVEL_APPRENTICE, TRUE)
 				H.adjust_skillrank_up_to(/datum/skill/misc/lockpicking, SKILL_LEVEL_APPRENTICE, TRUE)
 				gloves = /obj/item/clothing/gloves/roguetown/fingerless_leather
@@ -101,6 +102,7 @@
 				armor = /obj/item/clothing/suit/roguetown/armor/manual/pushups/leather//a little bit of low quality armor
 				gloves = /obj/item/clothing/gloves/roguetown/bandages 
 				shirt = /obj/item/clothing/suit/roguetown/shirt/shortshirt
+				ADD_TRAIT(H, TRAIT_CIVILIZEDBARBARIAN, TRAIT_GENERIC)//punch-out!
 				H.adjust_skillrank_up_to(/datum/skill/combat/wrestling, SKILL_LEVEL_JOURNEYMAN, TRUE)
 				H.adjust_skillrank_up_to(/datum/skill/combat/unarmed, SKILL_LEVEL_JOURNEYMAN, TRUE)
 				H.change_stat(STATKEY_INT, -2)//idiot .
