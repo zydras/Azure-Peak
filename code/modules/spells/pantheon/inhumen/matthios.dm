@@ -296,7 +296,8 @@
 
 	// DEVOTION CHECK
 	if(devotion_cost > 0)
-		if(!H.devotion?.check_devotion(devotion_cost))
+		src.devotion_cost = devotion_cost
+		if(!H.devotion?.check_devotion(src))
 			to_chat(H, span_warning("Your connection to the Free God is faint. Don't ask favors you cannot pay for."))
 			return FALSE
 
