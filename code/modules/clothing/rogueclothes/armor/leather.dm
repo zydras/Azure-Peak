@@ -58,6 +58,11 @@
 	icon_state = "artijacket"
 	desc = "A thick leather jacket adorned with fur and cog decals. The height of Heartfelt fashion."
 
+/obj/item/clothing/suit/roguetown/armor/leather/jacket/innjacket
+	name = "innkeeper's jacket"
+	icon_state = "innjacket"
+	desc = "A sleeveless jacket adorned with a crown of fur and blue leathers. The height of Kingsfield fashion."
+
 /obj/item/clothing/suit/roguetown/armor/leather/cuirass
 	name = "leather cuirass"
 	desc = "A leather cuirass."
