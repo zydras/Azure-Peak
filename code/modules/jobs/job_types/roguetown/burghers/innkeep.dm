@@ -10,7 +10,6 @@
 
 	tutorial = "Adventurers and warriors alike have two exit plans; the early grave or even earlier retirement. \
 				As the proud owner of this fine establishment, you took the latter: The Azurian Pint, tavern, inn, and bathhouse! \
-				You even have an assortment of staff to help you, and plenty of business from the famished townsfolk looking to eat, weary travelers looking to rest, and characters of dubious repute seeking their own sort of success. \
 				Your abilities in combat have gotten a little rusty, and the church across the street gives you the odd evil eye for the extra 'delights' of the bathhouse--but, well... \
 				You can't win 'em all!"
 
@@ -32,7 +31,8 @@
 
 /datum/advclass/innkeeper
 	name = "Innkeeper"
-	tutorial = "Adventurers and warriors alike have two exit plans; the early grave or even earlier retirement. As the proud owner of this fine establishment, you took the latter: The Azurian Pint, tavern, inn, and bathhouse! You even have an assortment of staff to help you, and plenty of business from the famished townsfolk looking to eat, weary travelers looking to rest, and characters of dubious repute seeking their own sort of success. Your abilities in combat have gotten a little rusty, and the church across the street gives you the odd evil eye for the extra 'delights' of the bathhouse--but, well... You can't win 'em all!"
+	tutorial = "Adventurers and warriors alike have two exit plans; the early grave or even earlier retirement. As the proud owner of this fine establishment, you took the latter: The Azurian Pint, tavern, inn, and bathhouse! Your abilities in combat have gotten a little rusty, and the church across the street gives you the odd evil eye for the extra 'delights' of the bathhouse--but, well... You can't win 'em all!"
+	extra_context = "Remember: Innkeepers get a 1CON, 1WIL, 1SPD, and 3STR buff while within the Inn. The Innkeeper has four subclasses, each providing an extra four weighted stats: Rogue, Knight, Pugilist and Ranger. "
 	outfit = /datum/outfit/job/roguetown/innkeeper/basic
 	category_tags = list(CTAG_INNKEEPER)
 	subclass_stats = list( //total 2 base weight + 4 extra weight with stats given by subclass/loadout. Remember: Innkeepers get 1CON, 1WIL, 1SPD, and 3STR while within the Inn.
