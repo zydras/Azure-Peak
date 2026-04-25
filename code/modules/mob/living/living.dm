@@ -497,6 +497,10 @@
 				O.sublimb_grabbed = item_override
 			else
 				O.sublimb_grabbed = used_limb
+			C.update_hud_hand_slot(BP?.held_index)
+			var/datum/hud/hud_used = C.hud_used
+			if(BP && hud_used?.zone_select)
+				hud_used.zone_select.update_limb(BP.body_zone)
 			put_in_hands(O)
 			O.update_hands(src)
 			if(HAS_TRAIT(src, TRAIT_STRONG_GRABBER) || item_override)
@@ -2193,7 +2197,7 @@
 					break
 			if(!can_see_ht)
 				continue
-			found_ping(get_turf(HT), client, "hidden")
+			found_ping(get_turf(HT), client, "paws")
 			var/dist = get_dist(src, HT)
 			if(dist < min_dist)
 				min_dist = dist
