@@ -50,6 +50,7 @@
 		/datum/skill/combat/maces = SKILL_LEVEL_JOURNEYMAN,
 		/datum/skill/combat/unarmed = SKILL_LEVEL_JOURNEYMAN,
 		/datum/skill/combat/wrestling = SKILL_LEVEL_JOURNEYMAN,
+		/datum/skill/misc/athletics = SKILL_LEVEL_JOURNEYMAN,
 		/datum/skill/labor/lumberjacking = SKILL_LEVEL_JOURNEYMAN,
 		/datum/skill/labor/mining = SKILL_LEVEL_JOURNEYMAN,
 		/datum/skill/craft/crafting = SKILL_LEVEL_JOURNEYMAN,

@@ -50,6 +50,7 @@
 		/datum/skill/combat/unarmed = SKILL_LEVEL_APPRENTICE,
 		/datum/skill/craft/crafting = SKILL_LEVEL_JOURNEYMAN,
 		/datum/skill/combat/wrestling = SKILL_LEVEL_JOURNEYMAN,
+		/datum/skill/misc/athletics = SKILL_LEVEL_APPRENTICE,
 		/datum/skill/craft/blacksmithing = SKILL_LEVEL_MASTER,
 		/datum/skill/craft/armorsmithing = SKILL_LEVEL_MASTER,
 		/datum/skill/craft/weaponsmithing = SKILL_LEVEL_MASTER,
