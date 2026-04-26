@@ -1,5 +1,3 @@
-#define GUILDMASTER_ANNOUNCEMENT_COOLDOWN (2 MINUTES)
-
 /datum/job/roguetown/guildmaster
 	title = "Guildmaster"
 	flag = GUILDMASTER
