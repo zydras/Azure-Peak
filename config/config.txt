@@ -537,11 +537,11 @@ DRIFT_PROFILE_DELAY 150
 
 ## Tick-dilation percentage over the last 1s above which we start the sustained-TD timer.
 ## Measured as (drift growth per real second) × world.tick_lag × 100.
-## 15 means "game advancing <=85% as fast as wall-clock" — egregious by our standards.
-SUSTAINED_TD_THRESHOLD_PCT 15
+## 20 means "game advancing <=80% as fast as wall-clock" — egregious by our standards.
+SUSTAINED_TD_THRESHOLD_PCT 20
 
 ## How long (in deciseconds) TD% must stay above SUSTAINED_TD_THRESHOLD_PCT before we dump a profile.
-SUSTAINED_TD_DURATION 150
+SUSTAINED_TD_DURATION 200
 
 ## Minimum gap (in deciseconds) between sustained-TD profile dumps. Set long to avoid the dump itself worsening the stall.
 SUSTAINED_TD_DELAY 1200
