@@ -30,6 +30,8 @@
 		/datum/advclass/innkeeper/exsoldier,
 		/datum/advclass/innkeeper/expugilist,
 		/datum/advclass/innkeeper/exranger,
+		/datum/advclass/innkeeper/exbard,
+		/datum/advclass/innkeeper/extapster,
 	)
 	spells = list(/obj/effect/proc_holder/spell/invoked/takeapprentice)
 
@@ -241,3 +243,104 @@
 	if(H.mind)
 		SStreasury.give_money_account(ECONOMIC_UPPER_CLASS, H, "Savings.")
 	
+/datum/advclass/innkeeper/exbard
+	name = "Once an Audacious Bard"
+	tutorial = "Once a bard wandering the lands to see its tales, your past life of scribing tunes sitting within the woods be is behind you. Mostly. You now work as the Innkeeper of the Azurian Pint, putting your past life in the confines of memory."
+	extra_context = "Remember: Innkeepers get a 1CON, 1WIL, 1SPD, and 3STR buff while within the Inn."
+	outfit = /datum/outfit/job/roguetown/innkeeper/exbard
+	category_tags = list(CTAG_INNKEEPER)
+	
+	traits_applied = list(TRAIT_GOODLOVER) 
+	subclass_stats = list( //total 6 given by subclass. Remember: Innkeepers get 1CON, 1WIL, 1SPD, and 3STR while within the Inn.
+		STATKEY_STR = -2,//weakling
+		STATKEY_LCK = 2,
+		STATKEY_PER = 2,
+		STATKEY_SPD = 2
+	)
+	age_mod = /datum/class_age_mod/innkeeper
+	subclass_skills = list(
+		/datum/skill/combat/wrestling = SKILL_LEVEL_APPRENTICE,
+		/datum/skill/combat/knives = SKILL_LEVEL_APPRENTICE,
+		/datum/skill/misc/swimming = SKILL_LEVEL_APPRENTICE,
+		/datum/skill/misc/climbing = SKILL_LEVEL_APPRENTICE,
+		/datum/skill/misc/athletics = SKILL_LEVEL_APPRENTICE,
+		/datum/skill/misc/reading = SKILL_LEVEL_APPRENTICE,
+		/datum/skill/craft/cooking = SKILL_LEVEL_EXPERT,
+		/datum/skill/craft/crafting = SKILL_LEVEL_APPRENTICE,
+		/datum/skill/labor/butchering = SKILL_LEVEL_JOURNEYMAN,
+		/datum/skill/labor/farming = SKILL_LEVEL_APPRENTICE,
+		/datum/skill/craft/carpentry = SKILL_LEVEL_APPRENTICE, 
+		/datum/skill/misc/music = SKILL_LEVEL_JOURNEYMAN, //music!
+	)
+
+/datum/outfit/job/roguetown/innkeeper/exbard/pre_equip(mob/living/carbon/human/H)
+	..()
+	H.adjust_blindness(-3)
+	pants = /obj/item/clothing/under/roguetown/tights/black
+	shoes = /obj/item/clothing/shoes/roguetown/shortboots
+	backr = /obj/item/storage/backpack/rogue/satchel
+	belt = /obj/item/storage/belt/rogue/leather
+	beltl = /obj/item/storage/belt/rogue/pouch/coins/mid
+	beltr = /obj/item/storage/keyring/innkeep
+	shirt = /obj/item/clothing/suit/roguetown/shirt/undershirt/lowcut
+	armor = /obj/item/clothing/suit/roguetown/armor/leather/jacket/innjacket
+	backpack_contents = list(
+		/obj/item/bottle_kit,
+		/obj/item/storage/keyring/innkeep_rooms,
+		/obj/item/reagent_containers/glass/bucket/pot/kettle/tankard/silver,
+		/obj/item/mini_flagpole/innkeeper
+	)
+	if(H.mind)
+		SStreasury.give_money_account(ECONOMIC_UPPER_CLASS, H, "Savings.")
+/datum/advclass/innkeeper/extapster
+	name = "Once a Mere Tapster"
+	tutorial = "Once a tapster manning this very inn, your past life of merely serving ale and being paid a meager pay is behind you. Mostly. You now work as the Innkeeper of the Azurian Pint, putting your past life in the confines of memory."
+	extra_context = "Remember: Innkeepers get a 1CON, 1WIL, 1SPD, and 3STR buff while within the Inn."
+	outfit = /datum/outfit/job/roguetown/innkeeper/extapster
+	category_tags = list(CTAG_INNKEEPER)
+	
+	traits_applied = list(TRAIT_SEEPRICES_SHITTY) 
+	subclass_stats = list( //total 6 given by subclass. Remember: Innkeepers get 1CON, 1WIL, 1SPD, and 3STR while within the Inn.
+		STATKEY_STR = -1,//weakling
+		STATKEY_INT = 2,
+		STATKEY_PER = 2,
+		STATKEY_SPD = 1
+	)
+	age_mod = /datum/class_age_mod/innkeeper
+	subclass_skills = list(
+		/datum/skill/combat/wrestling = SKILL_LEVEL_APPRENTICE,
+		/datum/skill/combat/knives = SKILL_LEVEL_APPRENTICE,
+		/datum/skill/misc/swimming = SKILL_LEVEL_APPRENTICE,
+		/datum/skill/misc/climbing = SKILL_LEVEL_APPRENTICE,
+		/datum/skill/misc/athletics = SKILL_LEVEL_APPRENTICE,
+		/datum/skill/misc/reading = SKILL_LEVEL_APPRENTICE,
+		/datum/skill/craft/cooking = SKILL_LEVEL_MASTER,
+		/datum/skill/craft/crafting = SKILL_LEVEL_APPRENTICE,
+		/datum/skill/labor/butchering = SKILL_LEVEL_JOURNEYMAN,
+		/datum/skill/labor/farming = SKILL_LEVEL_APPRENTICE,
+		/datum/skill/craft/carpentry = SKILL_LEVEL_APPRENTICE, 
+		/datum/skill/misc/music = SKILL_LEVEL_APPRENTICE, 
+	)
+
+/datum/outfit/job/roguetown/innkeeper/extapster/pre_equip(mob/living/carbon/human/H)
+	..()
+	H.adjust_blindness(-3)
+	pants = /obj/item/clothing/under/roguetown/tights/black
+	shoes = /obj/item/clothing/shoes/roguetown/shortboots
+	backr = /obj/item/storage/backpack/rogue/satchel
+	belt = /obj/item/storage/belt/rogue/leather
+	beltl = /obj/item/storage/belt/rogue/pouch/coins/mid
+	beltr = /obj/item/storage/keyring/innkeep
+	shirt = /obj/item/clothing/suit/roguetown/shirt/undershirt/lowcut
+	armor = /obj/item/clothing/suit/roguetown/armor/leather/jacket/innjacket
+	backpack_contents = list(
+		/obj/item/bottle_kit,
+		/obj/item/storage/keyring/innkeep_rooms,
+		/obj/item/reagent_containers/glass/bucket/pot/kettle/tankard/silver, //two of them
+		/obj/item/reagent_containers/glass/bucket/pot/kettle/tankard/silver,
+		/obj/item/mini_flagpole/innkeeper
+	)
+	if(H.mind)
+		SStreasury.give_money_account(ECONOMIC_UPPER_CLASS, H, "Savings.")
+
+
