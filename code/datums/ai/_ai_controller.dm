@@ -68,6 +68,8 @@ have ways of interacting with a specific atom and control it. They posses a blac
 	var/can_idle = TRUE
 	///What distance should we be checking for interesting things when considering idling/deidling? Defaults to AI_DEFAULT_INTERESTING_DIST
 	var/interesting_dist = AI_DEFAULT_INTERESTING_DIST
+	///Whether the pathing layer should fall back to climbing climbable structures when blocked.
+	var/can_climb_structures = TRUE
 	///
 	var/movement_displacement_time = 0
 

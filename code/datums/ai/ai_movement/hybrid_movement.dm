@@ -181,7 +181,7 @@
 					// Use step() with explicit direction rather than step_to().
 					// Step will fail if we can't move in that direction and allow us to climb.
 					var/move_dir = get_dir(movable_pawn, next_step)
-					if(!step(movable_pawn, move_dir, controller.movement_delay))
+					if(!step(movable_pawn, move_dir, controller.movement_delay) && controller.can_climb_structures)
 						var/obj/structure/climb_target
 						for(var/obj/structure/O in next_step)
 							if(O.climbable)
