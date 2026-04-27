@@ -883,13 +883,9 @@ GLOBAL_VAR_INIT(farm_animals, FALSE)
 
 	if(client.eye != src)
 		var/atom/A = client.eye
-		if(!A)
-			world.log << "[src]: update_sight() - client.eye is null"
-		else if(hascall(A, "update_remote_sight"))
+		if(hascall(A, "update_remote_sight"))
 			if(A.update_remote_sight(src))
 				return
-		else
-			world.log << "[src]: update_sight() - eye has no update_remote_sight(): [A]"
 	sync_lighting_plane_alpha()
 
 /mob/living/simple_animal/can_hold_items()
