@@ -216,7 +216,7 @@
 //		DBG("restore forceMove temp -> turf")
 		temp.forceMove(original_turf)
 		hard_reset_spatial(temp)
-	else
+//	else
 //		DBG("restore warning: no turf")
 
 	temp.notransform = FALSE
