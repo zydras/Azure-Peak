@@ -231,9 +231,6 @@
 /datum/mob_descriptor/stature/nerdowell
 	name = "Nerdowell"
 
-/datum/mob_descriptor/stature/nonce
-	name = "Nonce"
-
 /datum/mob_descriptor/stature/peon
 	name = "Peon"
 

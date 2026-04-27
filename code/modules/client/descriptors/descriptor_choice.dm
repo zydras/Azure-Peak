@@ -168,7 +168,6 @@
 		/datum/mob_descriptor/stature/eejit,
 		/datum/mob_descriptor/stature/crone,
 		/datum/mob_descriptor/stature/nerdowell,
-		/datum/mob_descriptor/stature/nonce,
 		/datum/mob_descriptor/stature/peon,
 		/datum/mob_descriptor/stature/scion,
 	)
