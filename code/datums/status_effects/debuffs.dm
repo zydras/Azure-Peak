@@ -791,7 +791,7 @@
 /datum/status_effect/debuff/baitcd
 	id = "baitcd"
 	alert_type = /atom/movable/screen/alert/status_effect/debuff/baitedcd
-	duration = 30 SECONDS
+	duration = 20 SECONDS
 
 /datum/status_effect/debuff/baitcd/on_creation(mob/living/new_owner, new_dur)
 	if(new_dur)
