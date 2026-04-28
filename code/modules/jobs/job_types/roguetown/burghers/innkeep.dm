@@ -88,7 +88,7 @@
 		/obj/item/mini_flagpole/innkeeper
 	)
 	if(H.mind)
-		SStreasury.give_money_account(ECONOMIC_UPPER_CLASS, H, "Savings.")
+		SStreasury.grant_savings(ECONOMIC_UPPER_CLASS, H)
 
 /datum/advclass/innkeeper/exsoldier
 	name = "Once an Errant Soldier"
@@ -138,7 +138,7 @@
 		/obj/item/mini_flagpole/innkeeper
 	)
 	if(H.mind)
-		SStreasury.give_money_account(ECONOMIC_UPPER_CLASS, H, "Savings.")
+		SStreasury.grant_savings(ECONOMIC_UPPER_CLASS, H)
 
 /datum/advclass/innkeeper/expugilist
 	name = "Once a Pugilistic Brute"
@@ -191,7 +191,7 @@
 		/obj/item/mini_flagpole/innkeeper
 	)
 	if(H.mind)
-		SStreasury.give_money_account(ECONOMIC_UPPER_CLASS, H, "Savings.")
+		SStreasury.grant_savings(ECONOMIC_UPPER_CLASS, H)
 
 /datum/advclass/innkeeper/exranger
 	name = "Once a Fierce Ranger"
@@ -241,7 +241,7 @@
 		/obj/item/mini_flagpole/innkeeper
 	)
 	if(H.mind)
-		SStreasury.give_money_account(ECONOMIC_UPPER_CLASS, H, "Savings.")
+		SStreasury.grant_savings(ECONOMIC_UPPER_CLASS, H)
 	
 /datum/advclass/innkeeper/exbard
 	name = "Once an Audacious Bard"
@@ -291,7 +291,8 @@
 		/obj/item/mini_flagpole/innkeeper
 	)
 	if(H.mind)
-		SStreasury.give_money_account(ECONOMIC_UPPER_CLASS, H, "Savings.")
+		SStreasury.grant_savings(ECONOMIC_UPPER_CLASS, H)
+
 /datum/advclass/innkeeper/extapster
 	name = "Once a Mere Tapster"
 	tutorial = "Once a tapster manning this very inn, your past life of merely serving ale and being paid a meager pay is behind you. Mostly. You now work as the Innkeeper of the Azurian Pint, putting your past life in the confines of memory."
@@ -341,6 +342,6 @@
 		/obj/item/mini_flagpole/innkeeper
 	)
 	if(H.mind)
-		SStreasury.give_money_account(ECONOMIC_UPPER_CLASS, H, "Savings.")
+		SStreasury.grant_savings(ECONOMIC_UPPER_CLASS, H)
 
 
