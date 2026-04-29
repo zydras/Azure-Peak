@@ -284,6 +284,10 @@
 	if(ishuman(targets[1]))
 		var/mob/living/carbon/human/target = targets[1]
 		var/mob/living/carbon/human/UH = user
+		if(target == UH)
+			to_chat(UH, span_warning("Foolishness."))
+			revert_cast()
+			return FALSE
 		if(NOBLOOD in UH.dna?.species?.species_traits)
 			to_chat(UH, span_warning("I have no blood to provide."))
 			revert_cast()
