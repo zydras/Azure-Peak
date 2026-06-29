@@ -293,6 +293,9 @@
     . += span_info("Stamping a folded letter with redtallow will increase the amount of MARQUES that're rewarded upon mailage.")
     . += span_info("Successfully mailing a SLIP will reward the sender with MARQUES. The amount of rewarded MARQUES increases, depending on whether you're an Orthodoxist, Absolver, or Inquisitor.")
 
+/obj/item/paper/inqslip/arrival/neophyte
+	marquevalue = 3 //Three Fucking Marques
+
 /obj/item/paper/inqslip/arrival/ortho
 	marquevalue = 8 //At least two Orthodoxists can afford one relic, should they be understaffed and outgunned.
 
