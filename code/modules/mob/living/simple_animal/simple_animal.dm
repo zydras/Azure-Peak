@@ -1,4 +1,16 @@
 #define MAX_FARM_ANIMALS 20
+// How long it takes to start butchering as an unskilled person
+#define BUTCHERING_UNSKILLED_PRE_TIME 0.5 SECONDS
+// Time pre calculations
+#define BUTCHERING_BASE_TIME_PER_STEP 2 SECONDS
+// Max time per butchering step
+#define BUTCHERING_MAX_TIME_PER_STEP 1.8 SECONDS
+// Time per step reduction per skill level
+#define BUTCHERING_TIME_REDUCTION_PER_SKILL 0.3 SECONDS
+// EXP per int per step
+#define BUTCHERING_EXP_PER_STEP 0.4
+// EXP for fully finishing a butchering process per int
+#define BUTCHERING_EXP_FINISH 2
 
 GLOBAL_VAR_INIT(farm_animals, FALSE)
 
@@ -44,6 +56,8 @@ GLOBAL_VAR_INIT(farm_animals, FALSE)
 
 	var/obj/item/handcuffed = null //Whether or not the mob is handcuffed
 	var/obj/item/legcuffed = null  //Same as handcuffs but for legs. Bear traps use this.
+
+	var/blood_color = BLOOD_COLOR_RED
 
 	///When someone interacts with the simple animal.
 	///Help-intent verb in present continuous tense.
@@ -101,6 +115,8 @@ GLOBAL_VAR_INIT(farm_animals, FALSE)
 
 	///LETS SEE IF I CAN SET SPEEDS FOR SIMPLE MOBS WITHOUT DESTROYING EVERYTHING. Higher speed is slower, negative speed is faster.
 	var/speed = 1
+	///Delay for movement and riding logic across the simple-animal hierarchy.
+	var/move_to_delay = 3
 
 	///Hot simple_animal baby making vars.
 	var/list/childtype = null
@@ -194,6 +210,7 @@ GLOBAL_VAR_INIT(farm_animals, FALSE)
 	var/obj/item/clothing/barding/bbarding
 	var/caparison_over_barding = FALSE
 	var/barding_speed_mult = 1
+	var/do_footstep = FALSE
 	var/fly_time = 3 SECONDS //default fly delay
 
 /mob/living/simple_animal/get_mechanics_examine(mob/user)
@@ -204,6 +221,9 @@ GLOBAL_VAR_INIT(farm_animals, FALSE)
 		. += span_info("To dismount an incapacitated or tied up mob, all riders must dismount, first.")
 		if(ssaddle)
 			. += span_info("Use middle-mouse button on the mount to open its inventory.")
+
+/mob/living/simple_animal/get_blood_color()
+	return blood_color
 
 /mob/living/simple_animal/Initialize()
 	. = ..()
@@ -375,6 +395,7 @@ GLOBAL_VAR_INIT(farm_animals, FALSE)
 	if(user)
 		owner = user
 		SEND_SIGNAL(user, COMSIG_ANIMAL_TAMED, src)
+	pet_passive = TRUE
 
 //mob/living/simple_animal/examine(mob/user)
 //	. = ..()
@@ -529,11 +550,11 @@ GLOBAL_VAR_INIT(farm_animals, FALSE)
 		var/obj/item/held_item = user.get_active_held_item()
 		if(held_item)
 			if((butcher_results || guaranteed_butcher_results) && ((held_item.get_sharpness() && held_item.wlength == WLENGTH_SHORT) || istype(held_item, /obj/item/contraption/shears)))
-				var/used_time = 3 SECONDS
+				var/used_time = BUTCHERING_UNSKILLED_PRE_TIME
 				var/on_meathook = FALSE
 				if((src.buckled && istype(src.buckled, /obj/structure/meathook))|| istype(held_item, /obj/item/contraption/shears))
 					on_meathook = TRUE //will work efficiently if they are using autosheers as well
-					used_time -= 3 SECONDS
+					used_time -= BUTCHERING_UNSKILLED_PRE_TIME
 					visible_message("[user] begins to efficiently butcher [src]...")
 				else
 					visible_message("[user] begins to butcher [src]...")
@@ -574,7 +595,7 @@ GLOBAL_VAR_INIT(farm_animals, FALSE)
 		ssaddle = null
 
 	var/butchery_skill_level = user.get_skill_level(/datum/skill/labor/butchering)
-	var/time_per_cut = max(5, 30 - butchery_skill_level * 5) // 3 seconds for no skill, 5 ticks for master
+	var/time_per_cut = min(BUTCHERING_MAX_TIME_PER_STEP, BUTCHERING_BASE_TIME_PER_STEP - butchery_skill_level * BUTCHERING_TIME_REDUCTION_PER_SKILL) // 1.8 seconds for no skill, 0.2 seconds for legendary
 	if(on_meathook)
 		time_per_cut *= 0.75
 	var/botch_chance = 0
@@ -641,8 +662,8 @@ GLOBAL_VAR_INIT(farm_animals, FALSE)
 					var/obj/item/reagent_containers/food/snacks/F = I
 					F.become_rotten()
 
-		if(user.mind)
-			user.mind.add_sleep_experience(/datum/skill/labor/butchering, user.STAINT * 0.5)
+		if(user.mind && !isemptylist(butcher_results))
+			user.mind.add_sleep_experience(/datum/skill/labor/butchering, user.STAINT * BUTCHERING_EXP_PER_STEP)
 		playsound(src, 'sound/foley/gross.ogg', 100, FALSE)
 	if(isemptylist(butcher_results))
 		if(head_butcher)
@@ -664,8 +685,16 @@ GLOBAL_VAR_INIT(farm_animals, FALSE)
 			if(rotstuff)
 				head_quality = -1
 			head.scale_butchering_quality(head_quality)
+			if(no_head_bounty)
+				head.sellprice = 0
 		to_chat(user, "<span class='notice'>I finish butchering: [butcher_summary(botch_count, normal_count, perfect_count, botch_chance, perfect_chance)].</span>")
+		if(user.mind)
+			user.mind.add_sleep_experience(/datum/skill/labor/butchering, user.STAINT * BUTCHERING_EXP_FINISH)
 		gib()
+
+/mob/living/simple_animal/mark_contract_spawned()
+	. = ..()
+	head_butcher = null
 
 /mob/living/proc/butcher_summary(botch_count, normal_count, perfect_count, botch_chance, perfect_chance)
     var/list/parts = list()
@@ -709,10 +738,6 @@ GLOBAL_VAR_INIT(farm_animals, FALSE)
 		remove_movespeed_modifier(MOVESPEED_ID_SIMPLEMOB_VARSPEED, TRUE)
 	add_movespeed_modifier(MOVESPEED_ID_SIMPLEMOB_VARSPEED, TRUE, 100, multiplicative_slowdown = speed, override = TRUE)
 
-/mob/living/simple_animal/Stat()
-	..()
-	return //RTCHANGE
-
 /mob/living/simple_animal/proc/drop_loot()
 	for(var/i in loot) // If someone puts a turf in this list I'm going to kill you.
 		new i(loc)
@@ -726,7 +751,7 @@ GLOBAL_VAR_INIT(farm_animals, FALSE)
 	if(dextrous)
 		drop_all_held_items()
 	if(!gibbed)
-		emote("death", forced = TRUE)
+		play_death_emote()
 	layer = layer-0.1
 	if(del_on_death)
 		..()
@@ -879,8 +904,9 @@ GLOBAL_VAR_INIT(farm_animals, FALSE)
 
 	if(client.eye != src)
 		var/atom/A = client.eye
-		if(A.update_remote_sight(src)) //returns 1 if we override all other sight updates.
-			return
+		if(hascall(A, "update_remote_sight"))
+			if(A.update_remote_sight(src))
+				return
 	sync_lighting_plane_alpha()
 
 /mob/living/simple_animal/can_hold_items()
@@ -923,10 +949,10 @@ GLOBAL_VAR_INIT(farm_animals, FALSE)
 		var/atom/movable/screen/inventory/hand/H
 		H = hud_used.hand_slots["[hand_index]"]
 		if(H)
-			H.update_icon()
+			H.update_hand_vis()
 		H = hud_used.hand_slots["[oindex]"]
 		if(H)
-			H.update_icon()
+			H.update_hand_vis()
 	return TRUE
 
 /mob/living/simple_animal/put_in_hands(obj/item/I, del_on_fail = FALSE, merge_stacks = TRUE)
@@ -950,7 +976,7 @@ GLOBAL_VAR_INIT(farm_animals, FALSE)
 
 //ANIMAL RIDING
 
-/mob/living/simple_animal/hostile/proc/get_mount_time(mob/living/M, default_fail)
+/mob/living/simple_animal/proc/get_mount_time(mob/living/M, default_fail)
 	var/time2mount = 12
 	if(M.mind)
 		var/amt = M.get_skill_level(/datum/skill/misc/riding)
@@ -961,17 +987,48 @@ GLOBAL_VAR_INIT(farm_animals, FALSE)
 			return default_fail
 	return time2mount
 
-/mob/living/simple_animal/hostile/proc/setup_mount_riding()
+/mob/living/simple_animal/proc/setup_mount(list/riding_offsets = list(TEXT_NORTH = list(0, 8), TEXT_SOUTH = list(0, 8), TEXT_EAST = list(-2, 8), TEXT_WEST = list(2, 8)), south_layer = ABOVE_MOB_LAYER, north_layer = OBJ_LAYER, east_layer = OBJ_LAYER, west_layer = OBJ_LAYER)
 	if(!can_buckle)
 		return
 	var/datum/component/riding/D = LoadComponent(/datum/component/riding/no_ocean)
-	D.set_riding_offsets(RIDING_OFFSET_ALL, list(TEXT_NORTH = list(0, 8), TEXT_SOUTH = list(0, 8), TEXT_EAST = list(-2, 8), TEXT_WEST = list(2, 8)))
-	D.set_vehicle_dir_layer(SOUTH, ABOVE_MOB_LAYER)
-	D.set_vehicle_dir_layer(NORTH, OBJ_LAYER)
-	D.set_vehicle_dir_layer(EAST, OBJ_LAYER)
-	D.set_vehicle_dir_layer(WEST, OBJ_LAYER)
+	D.set_riding_offsets(RIDING_OFFSET_ALL, riding_offsets)
+	D.set_vehicle_dir_layer(SOUTH, south_layer)
+	D.set_vehicle_dir_layer(NORTH, north_layer)
+	D.set_vehicle_dir_layer(EAST, east_layer)
+	D.set_vehicle_dir_layer(WEST, west_layer)
 
-/mob/living/simple_animal/hostile/user_unbuckle_mob(mob/living/M, mob/user)
+/mob/living/simple_animal/proc/add_saddleicon(saddle_above_state, saddle_state, overlay_layer = 4.3)
+	if(!ssaddle)
+		return
+	var/mutable_appearance/saddle_overlay = mutable_appearance(icon, saddle_above_state, overlay_layer)
+	saddle_overlay.appearance_flags = RESET_ALPHA|RESET_COLOR
+	add_overlay(saddle_overlay)
+	saddle_overlay = mutable_appearance(icon, saddle_state, overlay_layer)
+	saddle_overlay.appearance_flags = RESET_ALPHA|RESET_COLOR
+	add_overlay(saddle_overlay)
+
+/mob/living/simple_animal/proc/add_ridericon(mounted_state, overlay_layer = 4.3)
+	if(!has_buckled_mobs())
+		return
+	var/mutable_appearance/mounted_overlay = mutable_appearance(icon, mounted_state, overlay_layer)
+	mounted_overlay.appearance_flags = RESET_ALPHA|RESET_COLOR
+	add_overlay(mounted_overlay)
+
+/mob/living/simple_animal/proc/adjust_speed(mob/living/driver)
+	var/delay = vars["move_to_delay"]
+	if(!isnum(delay))
+		delay = 3
+	if(driver?.m_intent == MOVE_INTENT_RUN)
+		delay -= 1
+	if(driver?.mind)
+		var/amt = driver.get_skill_level(/datum/skill/misc/riding)
+		if(amt)
+			delay -= 5 + amt/6
+		else
+			delay -= 3
+	return max(delay, 1)
+
+/mob/living/simple_animal/user_unbuckle_mob(mob/living/M, mob/user)
 	if(user != M)
 		return
 	var/time2mount = get_mount_time(M, 30)
@@ -984,6 +1041,26 @@ GLOBAL_VAR_INIT(farm_animals, FALSE)
 		M.visible_message(span_danger("[M] falls off [src]!"))
 	..()
 	update_icon()
+
+/mob/living/simple_animal/user_buckle_mob(mob/living/M, mob/user)
+	if(user != M)
+		return ..()
+
+	var/datum/component/riding/riding_datum = GetComponent(/datum/component/riding/no_ocean)
+	if(!riding_datum)
+		return
+	var/time2mount = get_mount_time(M, 50)
+	riding_datum.vehicle_move_delay = adjust_speed(M)
+	if(!move_after(M,time2mount, target = src))
+		return
+	if(user.incapacitated())
+		return
+	M.forceMove(get_turf(src))
+	if(ssaddle)
+		playsound(src, 'sound/foley/saddlemount.ogg', 100, TRUE)
+	..()
+	update_icon()
+
 /mob/living/simple_animal/hostile/user_buckle_mob(mob/living/M, mob/user)
 	if(user != M)
 		if(!has_buckled_mobs())
@@ -1014,24 +1091,7 @@ GLOBAL_VAR_INIT(farm_animals, FALSE)
 		M.visible_message(span_warning("[user] hoists [M] onto [src]!"),\
 			span_warning("[user] hoists me onto [src]!"))
 		return TRUE
-
-	var/datum/component/riding/riding_datum = GetComponent(/datum/component/riding/no_ocean)
-	if(!riding_datum)
-		return
-	var/time2mount = get_mount_time(M, 50)
-	riding_datum.vehicle_move_delay = move_to_delay
-	if(!move_after(M,time2mount, target = src))
-		return
-	if(user.incapacitated())
-		return
-	M.forceMove(get_turf(src))
-	if(ssaddle)
-		playsound(src, 'sound/foley/saddlemount.ogg', 100, TRUE)
-	..()
-	update_icon()
-
-/mob/living/simple_animal/hostile
-	var/do_footstep = FALSE
+	return ..()
 
 /mob/living/simple_animal/hostile/proc/dismount_incap()
 	if(!has_buckled_mobs())
@@ -1053,7 +1113,7 @@ GLOBAL_VAR_INIT(farm_animals, FALSE)
 	. = ..()
 	dismount_incap()
 
-/mob/living/simple_animal/hostile/relaymove(mob/user, direction)
+/mob/living/simple_animal/relaymove(mob/user, direction)
 	if (stat == DEAD)
 		return
 	var/oldloc = loc
@@ -1067,10 +1127,10 @@ GLOBAL_VAR_INIT(farm_animals, FALSE)
 	if(!driver || user != driver)
 		return
 
+	riding_datum.vehicle_move_delay = adjust_speed(driver)
 	if(riding_datum.handle_ride(driver, direction))
-		riding_datum.vehicle_move_delay = move_to_delay
+		riding_datum.vehicle_move_delay = adjust_speed(driver)
 		if(driver && user == driver && driver.m_intent == MOVE_INTENT_RUN)
-			riding_datum.vehicle_move_delay -= 1
 			if(loc != oldloc)
 				var/turf/open/T = loc
 				if(!do_footstep && T.footstep)
@@ -1086,13 +1146,6 @@ GLOBAL_VAR_INIT(farm_animals, FALSE)
 					playsound(loc,pick('sound/foley/footsteps/hoof/horsewalk (1).ogg','sound/foley/footsteps/hoof/horsewalk (2).ogg','sound/foley/footsteps/hoof/horsewalk (3).ogg'), 100, TRUE)
 				else
 					do_footstep = FALSE
-
-		if(driver && driver.mind)
-			var/amt = driver.get_skill_level(/datum/skill/misc/riding)
-			if(amt)
-				riding_datum.vehicle_move_delay -= 5 + amt/6
-			else
-				riding_datum.vehicle_move_delay -= 3
 		if(loc != oldloc)
 			var/obj/structure/mineral_door/MD = locate() in loc
 			if(MD && !MD.ridethrough)
@@ -1159,12 +1212,19 @@ GLOBAL_VAR_INIT(farm_animals, FALSE)
 		SSidlenpcpool.idle_mobs_by_zlevel[old_z] -= src
 		toggle_ai(initial(AIStatus))
 
-/mob/living/simple_animal/Move()
-	if(binded)
-		return FALSE
-	. = ..()
-//	if(!stat)
-//		eat_plants()
+/mob/living/simple_animal/Move(NewLoc, Dir, step_x, step_y)
+    if(binded)
+        return FALSE
+    var/oldloc = loc
+    . = ..()
+    if(. && loc != oldloc)
+        if(client)
+            // Player
+            set_glide_size(DELAY_TO_GLIDE_SIZE(world.tick_lag))
+        else
+            // AI
+            set_glide_size(DELAY_TO_GLIDE_SIZE(move_to_delay))
+    return .
 
 /mob/living/simple_animal/proc/eat_plants()
 
@@ -1240,7 +1300,7 @@ GLOBAL_VAR_INIT(farm_animals, FALSE)
 
 //Flight related procs foy flying simple_animals
 /mob/living/simple_animal/proc/fly_up()
-	set category = "Winged Form"
+	set category = "RoleUnique.Winged Form"
 	set name = "Fly Up"
 
 	if(src.pulledby != null)
@@ -1255,7 +1315,7 @@ GLOBAL_VAR_INIT(farm_animals, FALSE)
 			to_chat(src, span_notice("I can't fly away while being grabbed!"))
 
 /mob/living/simple_animal/proc/fly_down()
-	set category = "Winged Form"
+	set category = "RoleUnique.Winged Form"
 	set name = "Fly Down"
 
 	if(src.pulledby != null)
@@ -1271,3 +1331,9 @@ GLOBAL_VAR_INIT(farm_animals, FALSE)
 //End flight
 
 #undef MAX_FARM_ANIMALS
+#undef BUTCHERING_UNSKILLED_PRE_TIME
+#undef BUTCHERING_BASE_TIME_PER_STEP
+#undef BUTCHERING_MAX_TIME_PER_STEP
+#undef BUTCHERING_TIME_REDUCTION_PER_SKILL
+#undef BUTCHERING_EXP_PER_STEP
+#undef BUTCHERING_EXP_FINISH

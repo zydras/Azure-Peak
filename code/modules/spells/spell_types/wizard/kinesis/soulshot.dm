@@ -7,7 +7,7 @@
 	Basic offensive magic, refined for over a millenium since the first Magi expelled mana from their body with pure malice and determination to destroy another."
 	fluff_desc = "Basic offensive magic, refined for over two millenium since the first Magi expelled mana from their body with pure malice and determination to destroy another. The natural evolution of the arcyne bolt - a barely held together ball of energy - into a focused beam of destructive force. The name 'soulshot' is derived from the original idea that one must put their soul into it to exert such a powerful projectiles. Its alignment - of pure arcynic energy, means that most magis cannot cast the spell when they are attuned to a 'unpure' aspect - like fire or lightning. Instead, this spell is generally used when one is attuned to Augmentation - one's own body, or Kinesis - the usage of motional force to displace your foes."
 	button_icon_state = "soulshot"
-	sound = 'sound/magic/vlightning.ogg'
+	sound = 'sound/magic/soulshot.ogg'
 	spell_color = GLOW_COLOR_KINESIS
 	glow_intensity = GLOW_INTENSITY_MEDIUM
 
@@ -28,11 +28,12 @@
 	charge_slowdown = CHARGING_SLOWDOWN_SMALL
 	charge_sound = 'sound/magic/charging.ogg'
 	cooldown_time = 8 SECONDS
-	is_implement_scaled_spell = TRUE
 	attunement_school = ASPECT_NAME_KINESIS
 
 	associated_skill = /datum/skill/magic/arcane
 	spell_tier = 2
+
+	spell_requirements = SPELL_REQUIRES_NO_ANTIMAGIC | SPELL_REQUIRES_HUMAN
 
 /obj/projectile/magic/soulshot
 	name = "soulshot"
@@ -42,7 +43,7 @@
 	hitscan = TRUE
 	movement_type = UNSTOPPABLE
 	guard_deflectable = TRUE
-	damage = 80
+	damage = 95
 	damage_type = BRUTE
 	woundclass = BCLASS_STAB
 	npc_simple_damage_mult = 1.5
@@ -74,9 +75,26 @@
 		return . || BULLET_ACT_HIT
 	hits++
 	// Halve damage after the first target
-	if(hits == 1)
-		damage = round(damage * 0.5)
+	if(hits <= 1)
+		damage = 95
+	else
+		damage = round(95 * 0.5)
 	if(hits >= max_hits)
 		qdel(src)
 		return . || BULLET_ACT_HIT
 	return BULLET_ACT_FORCE_PIERCE
+
+/datum/action/cooldown/spell/projectile/soulshot/lesser
+	name = "Lesser Soulshot"
+	desc = "Fire a devastating beam of kinetic force that pierces through up to 2 targets. Stopped by solid objects. \
+	Damage is halved after the first target. \
+	Deals 50% increased damage to simple-minded creechurs. \
+	Basic offensive magic, refined for over a millenium since the first Magi expelled mana from their body with pure malice and determination to destroy another."
+	invocations = list("Animus Ictus!")
+	projectile_type = /obj/projectile/magic/soulshot/lesser
+	attunement_school = null
+	spell_tier = 0
+	point_cost = 0
+
+/obj/projectile/magic/soulshot/lesser
+	max_hits = 2

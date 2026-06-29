@@ -1,3 +1,14 @@
+GLOBAL_LIST_INIT(skeleton_aggro, list(
+	",w Kill...",
+	",w Fight...",
+	",w Destroy...",
+	"*laugh",
+	"*laugh",
+	"*rage",
+	"*rage",
+	"*rage",
+)) //Single Words or noises, feral and empty of mind.
+
 /mob/living/carbon/human/species/skeleton
 	name = "skeleton"
 
@@ -5,7 +16,7 @@
 	gender = MALE
 	bodyparts = list(/obj/item/bodypart/chest, /obj/item/bodypart/head, /obj/item/bodypart/l_arm,
 					 /obj/item/bodypart/r_arm, /obj/item/bodypart/r_leg, /obj/item/bodypart/l_leg)
-	faction = list("undead")
+	faction = list(FACTION_UNDEAD)
 	var/skel_outfit = /datum/outfit/job/roguetown/npc/skeleton
 	var/skel_fragile = FALSE
 	ambushable = FALSE
@@ -17,17 +28,22 @@
 	cmode_music = 'sound/music/combat_weird.ogg'
 
 /mob/living/carbon/human/species/skeleton/npc
-	aggressive = 1
 	ambush_faction = "undead"
-	mode = NPC_AI_IDLE
-	wander = FALSE
+	ai_controller = /datum/ai_controller/human_npc
 	skel_fragile = TRUE
-	npc_jump_chance = 0 // no jumping skeletons
-	rude = TRUE
+	blood_toll_bucket = STATS_KILLED_DEADITES
+
+/mob/living/carbon/human/species/skeleton/npc/after_creation()
+	..()
+	gender = pick(MALE, FEMALE)
+	dna.species.handle_body(src)
+	update_body()
+	src.grant_language(/datum/language/undead)
+	SEND_SIGNAL(src, COMSIG_MOB_MODIFY_AGGRO_LINES, GLOB.skeleton_aggro, TRUE)
+	src.regenerate_icons() //Fixes the weird body with random genders for NPCs.
 
 /mob/living/carbon/human/species/skeleton/npc/ambush
 	threat_point = THREAT_MODERATE
-	wander = TRUE
 
 /mob/living/carbon/human/species/skeleton/Initialize()
 	. = ..()
@@ -37,10 +53,13 @@
 
 /mob/living/carbon/human/species/skeleton/after_creation()
 	..()
+	if(ai_controller)
+		AddComponent(/datum/component/ai_aggro_system)
+		ADD_TRAIT(src, TRAIT_NPC_EXAMINE, TRAIT_GENERIC)
 	if(dna && dna.species)
 		dna.species.species_traits |= NOBLOOD
-		dna.species.soundpack_m = new /datum/voicepack/skeleton()
-		dna.species.soundpack_f = new /datum/voicepack/skeleton()
+		dna.species.soundpack_m = GLOB.voice_packs[/datum/voicepack/skeleton]
+		dna.species.soundpack_f = GLOB.voice_packs[/datum/voicepack/skeleton]
 	for(var/datum/charflaw/cf in charflaws)
 		charflaws.Remove(cf)
 		QDEL_NULL(cf)
@@ -49,11 +68,13 @@
 	voice_type = VOICE_TYPE_MASC //So that "Unknown Man" properly substitutes in with face cover
 	ADD_TRAIT(src, TRAIT_NOMOOD, TRAIT_GENERIC)
 	ADD_TRAIT(src, TRAIT_BREADY, TRAIT_GENERIC)
+	ADD_TRAIT(src, TRAIT_NO_VOICEPACK_OVERRIDE, TRAIT_GENERIC) //Yeah, no more daintly skeletons W/the moaning noises.
 	ADD_TRAIT(src, TRAIT_NOHUNGER, TRAIT_GENERIC)
 	ADD_TRAIT(src, TRAIT_EASYDISMEMBER, TRAIT_GENERIC)
 	ADD_TRAIT(src, TRAIT_NOBREATH, TRAIT_GENERIC)
 	ADD_TRAIT(src, TRAIT_DEATHLESS, TRAIT_GENERIC)
 	ADD_TRAIT(src, TRAIT_NOPAIN, TRAIT_GENERIC)
+	ADD_TRAIT(src, TRAIT_NOBURN_RESIST, TRAIT_GENERIC)
 	ADD_TRAIT(src, TRAIT_TOXIMMUNE, TRAIT_GENERIC)
 	ADD_TRAIT(src, TRAIT_LEECHIMMUNE, INNATE_TRAIT)
 	ADD_TRAIT(src, TRAIT_LIMBATTACHMENT, TRAIT_GENERIC)
@@ -99,15 +120,20 @@
 /mob/living/carbon/human/species/skeleton/npc/no_equipment
 	skel_outfit = null
 
+/mob/living/carbon/human/species/skeleton/npc/no_equipment/after_creation()
+	..()
+	STAINT = 1
+
 /mob/living/carbon/human/species/skeleton/no_equipment
 	skel_outfit = null
 	var/datum/weakref/crystal
 
 /mob/living/carbon/human/species/skeleton/no_equipment/death(gibbed, nocutscene = FALSE)
 	..()
-	var/obj/item/necro_relics/necro_crystal/active_crystal = crystal.resolve()
-	for(var/datum/weakref/W in active_crystal.active_skeletons)
-		if(W.resolve() == src)
-			active_crystal.active_skeletons -= W
+	var/obj/item/necro_relics/necro_crystal/active_crystal = crystal?.resolve()
+	if(active_crystal)
+		for(var/datum/weakref/W in active_crystal.active_skeletons)
+			if(W.resolve() == src)
+				active_crystal.active_skeletons -= W
 	active_crystal = null
 	gib(no_brain = TRUE, no_organs = TRUE)

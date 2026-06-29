@@ -1,6 +1,6 @@
 #define TSTRIKE_STAGE1_DAMAGE 80
-#define TSTRIKE_STAGE2_DAMAGE 40
-#define TSTRIKE_STAGE3_DAMAGE 30
+#define TSTRIKE_STAGE2_DAMAGE 60
+#define TSTRIKE_STAGE3_DAMAGE 50
 #define TSTRIKE_STAGE1_DELAY 8
 #define TSTRIKE_STAGE2_DELAY 12
 #define TSTRIKE_STAGE3_DELAY 16
@@ -34,6 +34,8 @@
 
 	associated_skill = /datum/skill/magic/arcane
 	spell_impact_intensity = SPELL_IMPACT_HIGH
+
+	spell_requirements = SPELL_REQUIRES_NO_ANTIMAGIC | SPELL_REQUIRES_HUMAN
 
 /datum/action/cooldown/spell/thunderstrike/cast(atom/cast_on)
 	. = ..()

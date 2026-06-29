@@ -86,15 +86,23 @@
 	if(ismob(grabbed))
 		var/mob/M = grabbed
 		LAZYREMOVE(M.grabbedby, src)
-		if(iscarbon(M) && sublimb_grabbed)
+		if(iscarbon(M))
 			var/mob/living/carbon/carbonmob = M
-			var/obj/item/bodypart/part = carbonmob.get_bodypart(sublimb_grabbed)
+			var/obj/item/bodypart/part = limb_grabbed
+			if(!part && sublimb_grabbed)
+				part = carbonmob.get_bodypart(sublimb_grabbed)
 
 			// Edge case: if a weapon becomes embedded in a mob, our "grab" will be destroyed...
 			// In this case, grabbed will be the mob, and sublimb_grabbed will be the weapon, rather than a bodypart
 			// This means we should skip any further processing for the bodypart
 			if(part)
+				var/held_index = part.held_index
+				var/body_zone = part.body_zone
 				LAZYREMOVE(part.grabbedby, src)
+				carbonmob.update_hud_hand_slot(held_index)
+				var/datum/hud/hud_used = carbonmob.hud_used
+				if(hud_used?.zone_select)
+					hud_used.zone_select.update_limb(body_zone)
 				part = null
 				sublimb_grabbed = null
 	if(grabbee)
@@ -506,7 +514,9 @@
 		var/obj/item/I = locate(sublimb_grabbed) in L.embedded_objects
 		if(QDELETED(I) || QDELETED(L) || !L.remove_embedded_object(I))
 			return FALSE
-		L.receive_damage(I.embedding.embedded_unsafe_removal_pain_multiplier*I.w_class) //It hurts to rip it out, get surgery you dingus.
+
+		if(!(HAS_TRAIT(M, TRAIT_LEECHRESIST) && istype(I, /obj/item/natural/worms/leech)))
+			L.receive_damage(I.embedding.embedded_unsafe_removal_pain_multiplier * I.w_class) //It hurts to rip it out, get surgery you dingus.
 		user.dropItemToGround(src) // this will unset vars like limb_grabbed
 		user.put_in_hands(I)
 		C.emote("paincrit", TRUE)

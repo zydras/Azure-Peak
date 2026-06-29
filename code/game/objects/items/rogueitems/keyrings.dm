@@ -18,6 +18,8 @@
 	experimental_inhand = TRUE
 	experimental_onhip = TRUE
 	component_type = /datum/component/storage/concrete/roguetown/keyring
+	dropshrink = 0.85
+	is_important = TRUE
 
 /obj/item/storage/keyring/get_mechanics_examine(mob/user)
 	. = ..()
@@ -118,6 +120,7 @@
 	slot_flags = ITEM_SLOT_HIP|ITEM_SLOT_NECK|ITEM_SLOT_MOUTH|ITEM_SLOT_WRISTS
 	experimental_inhand = TRUE
 	dropshrink = 0.7
+	is_important = TRUE
 
 /obj/item/lockpickring/get_mechanics_examine(mob/user)
 	. = ..()
@@ -287,9 +290,9 @@
 /obj/item/storage/keyring/warden //All access to wardens
 	keys = list(/obj/item/roguekey/walls, /obj/item/roguekey/warden)
 
-//////////////
+///////////
 // MANOR //
-//////////////
+///////////
 
 /obj/item/storage/keyring/manor/guest/one // Two Manor Keys, Two Guest Room Keys
 	name = "guest room I keyring"
@@ -387,7 +390,7 @@
 /////////////////
 
 /obj/item/storage/keyring/inquisitor //All access to inquisition manor
-	keys = list(/obj/item/roguekey/inquisitor, /obj/item/roguekey/inquisitionmanor)
+	keys = list(/obj/item/roguekey/inquisitor, /obj/item/roguekey/inquisitionmanor, /obj/item/roguekey/absolverskey, /obj/item/roguekey/ortho_one, /obj/item/roguekey/ortho_two, /obj/item/roguekey/ortho_three)
 
 /////////////////
 // ANTAGONISTS //

@@ -500,6 +500,7 @@
 #define SKIN_COLOR_OLYMPIA "c7f9cc"
 #define SKIN_COLOR_NECRAL "23130c"
 #define SKIN_COLOR_ABYSSAL "22577a"
+#define SKIN_COLOR_FIGULUS "9f8251"
 
 //HALF ELF SKIN TONES
 #define SKIN_COLOR_GRENZEL_AVAR "fff0e9"
@@ -604,9 +605,17 @@
 
 #define TYPING_INDICATOR_TIMEOUT 20 MINUTES
 
-// NPC Debugging
+// NPC Debugging - uncomment to enable AI debug runechat
+// #define NPC_THINK_DEBUG
 #ifdef NPC_THINK_DEBUG
-#define NPC_THINK(message) visible_message(message, runechat_message = message)
+#define AI_THINK(pawn, message) pawn.visible_message(message, runechat_message = message)
 #else
-#define NPC_THINK(message)
+#define AI_THINK(pawn, message)
+#endif
+
+// #define NPC_THINK_DEBUG_WORLD
+#ifdef NPC_THINK_DEBUG_WORLD
+#define AI_WORLD_THINK(pawn, message) to_chat(world, "<span class='boldannounce'>\[AI-WORLD\] [pawn]: [message]</span>")
+#else
+#define AI_WORLD_THINK(pawn, message)
 #endif

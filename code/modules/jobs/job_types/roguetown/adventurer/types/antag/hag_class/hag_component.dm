@@ -14,7 +14,9 @@
 		/obj/item/alch/hag_moss/envy = 5,
 		/obj/item/alch/hag_moss/lullaby = 5,
 		/obj/item/alch/hag_moss/pride = 5,
-		/obj/item/roguekey/hag = 1
+		/obj/item/roguekey/hag = 1,
+		/obj/item/leechtick = 3,
+		/obj/item/leechtick_bloated = 3,
 	)
 	var/hag_tier = 1
 	var/static/list/curse_registry = list(
@@ -63,6 +65,8 @@
 			if(H.mind)
 				H.mind.i_know_person(hag_mob.mind)
 			found_any = TRUE
+			to_chat(H, span_boldnotice("A familiar rhythm pulses in the roots... [hag_mob.real_name] is walking the lands this week."))
+			to_chat(hag_mob, span_boldnotice("A familiar rhythm pulses in the roots... [H.real_name] is walking the lands this week."))
 	if(found_any)
 		to_chat(hag_mob, span_boldnotice("As your eyes adjust to the emerald gloom, the threads of the Mossmother's older puppets become visible to you..."))
 
@@ -76,7 +80,12 @@
 			if(existing.type == boon_path)
 				return // Already has this specific boon type
 	else
+		// First time victim, so we make a list for them AND add them to the hag's known mobs for mindlinking.
 		boon_registry[true_name] = list()
+		var/mob/living/hag_mob = parent
+		var/mob/living/victim = find_target(true_name)
+		if(hag_mob && hag_mob.mind && victim)
+			hag_mob.mind.i_know_person(victim)
 
 	var/datum/hag_boon/B = new boon_path(true_name, src, set_points)
 	var/list/name_list = boon_registry[true_name]
@@ -146,7 +155,7 @@
 		return FALSE
 
 	var/total_dumped = 0
-	var/max_dump = 5
+	var/max_dump = 10
 
 	for(var/path in stored_materials)
 		while(stored_materials[path] > 0 && total_dumped < max_dump)
@@ -358,7 +367,7 @@
 /datum/component/hag_curio_tracker/proc/handle_death(mob/living/carbon/L)
 	SIGNAL_HANDLER
 
-	L.visible_message(span_boldnotice("The corpse of [L.name] starts to dissolve into the soil"))
+	L.visible_message(span_boldnotice("The corpse of [L.name] starts to dissolve into the soil."))
 	addtimer(CALLBACK(src, PROC_REF(move_hag), L), 10 SECONDS)
 
 /datum/component/hag_curio_tracker/proc/move_hag(mob/living/L)

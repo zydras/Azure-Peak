@@ -82,7 +82,7 @@
 	npc_simple_damage_mult = 1.5
 	hitsound = 'sound/combat/hits/bladed/genthrust (1).ogg'
 	/// How many frost stacks to apply on hit
-	var/frost_stacks = 2
+	var/frost_stacks = 1
 
 /obj/projectile/energy/azurean_pilum/on_hit(target)
 	. = ..()
@@ -92,6 +92,8 @@
 			visible_message(span_warning("[src] disperses on contact with [L]!"))
 			playsound(get_turf(L), 'sound/magic/magic_nulled.ogg', 100)
 			return BULLET_ACT_BLOCK
+		if(out_of_effective_range())
+			return
 		apply_frost_stack(L, frost_stacks)
 		to_chat(L, span_danger("An icy pilum strikes true - the cold seeps into my bones!"))
 		if(firer)
@@ -105,8 +107,10 @@
 
 /obj/projectile/energy/azurean_pilum/arc
 	name = "Arced Azurean Pilum"
+	damage = 26
 	arcshot = TRUE
 
 /obj/projectile/energy/azurean_pilum/empowered/arc
 	name = "Empowered Arced Azurean Pilum"
+	damage = 26
 	arcshot = TRUE

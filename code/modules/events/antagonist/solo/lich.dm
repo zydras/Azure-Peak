@@ -8,11 +8,13 @@
 	roundstart = TRUE
 	antag_flag = ROLE_LICH
 	shared_occurence_type = SHARED_HIGH_THREAT
+	storyteller_antag_flags = STORYTELLER_ANTAG_VILLAIN | STORYTELLER_ANTAG_ROUNDSTART
+	storyteller_rumour_name = "liches"
 
 	denominator = 80
 
 	base_antags = 1
-	maximum_antags = 2
+	maximum_antags = 1
 
 	weight = 2	//i hate you
 	max_occurrences = 1 // mashallah

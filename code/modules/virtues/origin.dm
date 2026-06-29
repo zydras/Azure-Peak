@@ -1,17 +1,24 @@
 // Race list means RESTRICTED from the LISTED races.
 /datum/virtue/origin/unknown
 	name = "Nowhere"
-	origin_name = "Unknown"
-	desc = "I hail from nowhere in particular, thus I know no regional tongue in particular.<br>"
-	origin_desc = "Wanderers, peasantry, abandoned orphans or souls left to wander the bygone world, with no identity associated with them."
+	origin_name = "Elsewhere"
+	desc = "I originate from one of the many lesser settlements dotted around Psydonia, oft-too demure or distant for the Azurian layman to recall. Since I hail from nowhere in particular, I know no regional tongue in particular. <br>"
+	origin_desc = "For every greater kingdom that crests Psydonia, there lies a hundred lesser settlements; villages and fiefdoms, cursed to bare a legacy that will \
+	only be carried by the few who travel abroad. More distressingly, such a fate is strongly associated with the many souls who've been left to wander this bygone \
+	world, bereft of an identity to call their own - peasants, refugees, orphans, erranteers and more."
 
 /datum/virtue/origin/azuria
 	name = "Azurian"
 	origin_name = "Azuria"
-	desc = "I originate from the settled lands of Azuria, an independent domain sandwiched between Otava and Grenzelhoft. Famed for its delicious waffles and many ancient ruins, it is neither prosperous nor well-respected.<br>"
+	desc = "I originate from the settled lands of Azuria, an independent kingdom sandwiched between Otava and Grenzelhoft. Famed for its delicious waffles and ancient ruins, the Duchy is uniquely situated at the forefront of many worldly affairs - both past and present.<br>"
 	restricted = FALSE
 	added_languages = list(/datum/language/oldazurian)
-	origin_desc = "PING THE LORE TEAM TO ADD THIS"
+	origin_desc = "Originally unsettled, Azuria's forested plateaus bore witness to the greatest miracle in history; the Comet Syon, which saved the world from complete \
+	destruction. The missile's resting place - just off Azuria's coast - established the locale as a holy site for worshippers of both Psydon and the Pantheon, which \
+	eventually led to a Celestian-funded displacement of its ancestral elven inhabitants. The recent surge of villainous monsters and misfortune is said to be attributed \
+	to such injustices; a belated curse from Dendor's scornful hand. </br> Azuria houses a uniquely diverse culture, born from generations-upon-generations of pilgrims \
+	from all over Psydonia. Likewise, the lesser kingdom's proximity to the Comet Syon has spawned a deluge of anomalous quirks in both the land and its people; a facet \
+	that has drawn the attention of both opportunistic villains and desperate heroes."
 
 /datum/virtue/origin/grenzelhoft
 	name = "Grenzelhoftian"
@@ -88,6 +95,24 @@
 	have carefully recorded. The Naledi are poorly known to the West, and most travelers from the region come as traders or scholars. What is known is that the region is \
 	rich in gold, and that its people look to the stars for divine knowledge of our world.<br> It is rumored that the Naledi Emir is over five hundred years old, owing his \
 	long lifespan to closely-guarded alchemical secrets."
+
+/datum/virtue/origin/naledi/apply_to_human(mob/living/carbon/human/H)
+	..()
+	var/list/choices = list("Normal (Default)", "Strict (Naledi Complex)")
+	var/complex = tgui_input_list(H, "How tightly bound to traditions are you? (Keep in mind, some roles will force you to hold a Naledi Complex.)", "Naledi Philosophy", choices)
+	if(!complex)
+		complex = "Normal (Default)"
+	var/mask_type
+	switch(complex)
+		if("Strict (Naledi Complex)")
+			ADD_TRAIT(H, TRAIT_NALEDI, TRAIT_GENERIC)
+			mask_type = /obj/item/clothing/mask/rogue/lordmask/naledi/lesser
+			H.apply_status_effect(/datum/status_effect/debuff/lost_naledi_mask)
+			H.add_stress(/datum/stressevent/naledimasklost)
+		else
+			mask_type = /obj/item/clothing/mask/rogue/lordmask/tarnished
+	H.mind.special_items["Naledian Mask"] = mask_type
+	to_chat(H, span_notice("Your Naledian Mask has been added to your Item Stash."))
 
 /datum/virtue/origin/kazengun
 	name = "Kazengunese"
@@ -196,7 +221,11 @@
 				/datum/species/dwarf/mountain,
 				/datum/species/dwarf/gnome,
 				/datum/species/goblinp,
-				/datum/species/anthromorphsmall
+				/datum/species/moth,			//They are from the Underdark. source: moth.dm
+				/datum/species/anthromorphsmall,
+				/datum/species/dullahan,
+				/datum/species/ooze,
+				/datum/species/construct/metal,
 )
 	origin_desc = "Underdwellers are those who are descendants of their lengthy lineage that settled, lived and toiled in the darkest and deepest \
 	of depths of the vast, deadly Underdark a millennia ago. When one speaks of a 'Underdweller',a dark elf first comes to mynd, though despite them\

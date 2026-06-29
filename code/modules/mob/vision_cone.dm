@@ -6,6 +6,7 @@
 
 /mob
 	var/fovangle
+	var/cone_showing = FALSE
 
 //Procs
 /atom/proc/InCone(atom/center = usr, dir = NORTH)
@@ -276,7 +277,7 @@
 		var/mob/living/carbon/human/H = src
 		if(!(H.mobility_flags & MOBILITY_STAND))
 			return hide_cone()
-		if(!H.client && (H.mode != NPC_AI_OFF))
+		if(!H.client && H.ai_controller)
 			return hide_cone()
 		if(H.viewcone_override)
 			return hide_cone()
@@ -355,6 +356,9 @@
 /mob/proc/show_cone()
 	if(!client)
 		return
+	if(cone_showing)
+		return
+	cone_showing = TRUE
 	if(hud_used?.fov)
 		hud_used.fov.alpha = 255
 		hud_used.fov_blocker.alpha = 255
@@ -364,6 +368,9 @@
 /mob/proc/hide_cone()
 	if(!client)
 		return
+	if(!cone_showing)
+		return
+	cone_showing = FALSE
 	if(hud_used?.fov)
 		hud_used.fov.alpha = 0
 		hud_used.fov_blocker.alpha = 0

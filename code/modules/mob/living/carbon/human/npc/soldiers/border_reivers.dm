@@ -1,65 +1,20 @@
 /mob/living/carbon/human/species/human/northern/border_reiver/
-	aggressive=1
-	rude = TRUE
-	mode = NPC_AI_IDLE
-	faction = list("reiver")
+	ai_controller = /datum/ai_controller/human_npc
+	faction = list(FACTION_REIVER)
 	ambushable = FALSE
 	cmode = 1
 	setparrytime = 30
-	flee_in_pain = TRUE
 	a_intent = INTENT_HELP
 	d_intent = INTENT_PARRY
 	possible_mmb_intents = list(INTENT_BITE, INTENT_JUMP, INTENT_KICK, INTENT_SPECIAL)
-	possible_rmb_intents = list(
-		/datum/rmb_intent/feint,\
-		/datum/rmb_intent/aimed,\
-		/datum/rmb_intent/strong,\
-		/datum/rmb_intent/riposte,\
-		/datum/rmb_intent/weak
-	)
-	npc_max_jump_stamina = 0
 
-/mob/living/carbon/human/species/human/northern/border_reiver/retaliate(mob/living/L)
-	var/newtarg = target
-	.=..()
-	if(target)
-		aggressive=1
-		wander = TRUE
-		if(target != newtarg)
-			if(npc_combat_dialogue(GLOB.highwayman_aggro, prob_chance = 50, cooldown = 0))
-				pointed(target)
 
-/mob/living/carbon/human/species/human/northern/border_reiver/should_target(mob/living/L)
-	if(L.stat != CONSCIOUS)
-		return FALSE
-	. = ..()
 
 /mob/living/carbon/human/species/human/northern/border_reiver/Initialize()
 	. = ..()
 	set_species(/datum/species/human/northern)
 	addtimer(CALLBACK(src, PROC_REF(after_creation)), 1 SECONDS)
-	is_silent = TRUE
 
-/mob/living/carbon/human/species/human/northern/border_reiver/npc_idle()
-	if(m_intent == MOVE_INTENT_SNEAK)
-		return
-	if(world.time < next_idle)
-		return
-	next_idle = world.time + rand(30, 70)
-	if((mobility_flags & MOBILITY_MOVE) && isturf(loc) && wander)
-		if(prob(20))
-			var/turf/T = get_step(loc,pick(GLOB.cardinals))
-			if(!istype(T, /turf/open/transparent/openspace))
-				Move(T)
-		else
-			face_atom(get_step(src,pick(GLOB.cardinals)))
-	if(!wander && prob(10))
-		face_atom(get_step(src,pick(GLOB.cardinals)))
-
-/mob/living/carbon/human/species/human/northern/border_reiver/handle_combat()
-	if(mode == NPC_AI_HUNT)
-		npc_combat_dialogue(emotes = list("laugh"), prob_chance = 2)
-	. = ..()
 
 //Border Reivers from a nearby state the. To "Reive" is to raid, These guys should be fast, look kind of poor but not be badly equipped.
 //Solely an event mod atm expect alittle imbalance, readjust if added in actual gameplay
@@ -164,38 +119,28 @@
 			armor = /obj/item/clothing/suit/roguetown/armor/plate/cuirass/fluted
 
 /mob/living/carbon/human/species/human/northern/border_reiver/midgear
-	aggressive=1
-	rude = TRUE
-	mode = NPC_AI_IDLE
-	faction = list("reiver")
+	ai_controller = /datum/ai_controller/human_npc
+	faction = list(FACTION_REIVER)
 	ambushable = FALSE
 	cmode = 1
 	setparrytime = 30
-	flee_in_pain = TRUE
 	a_intent = INTENT_HELP
 	d_intent = INTENT_PARRY
 	possible_mmb_intents = list(INTENT_BITE, INTENT_JUMP, INTENT_KICK, INTENT_SPECIAL)
-	possible_rmb_intents = list(
-		/datum/rmb_intent/feint,\
-		/datum/rmb_intent/aimed,\
-		/datum/rmb_intent/strong,\
-		/datum/rmb_intent/riposte,\
-		/datum/rmb_intent/weak
-	)
-	npc_max_jump_stamina = 0
 
 /mob/living/carbon/human/species/human/northern/border_reiver/midgear/ambush
-	aggressive=1
-	wander = TRUE
 
 /mob/living/carbon/human/species/human/northern/border_reiver/midgear/after_creation()
 	..()
+	AddComponent(/datum/component/ai_aggro_system)
+	SEND_SIGNAL(src, COMSIG_MOB_MODIFY_AGGRO_LINES, GLOB.highwayman_aggro, TRUE)
 	job = "Border Reiver"
 	ADD_TRAIT(src, TRAIT_NOMOOD, TRAIT_GENERIC)
 	ADD_TRAIT(src, TRAIT_NOHUNGER, TRAIT_GENERIC)
 	ADD_TRAIT(src, TRAIT_LEECHIMMUNE, INNATE_TRAIT)
 	ADD_TRAIT(src, TRAIT_BREADY, TRAIT_GENERIC)
 	ADD_TRAIT(src, TRAIT_MEDIUMARMOR, TRAIT_GENERIC)
+	ADD_TRAIT(src, TRAIT_NPC_EXAMINE, TRAIT_GENERIC)
 	equipOutfit(new /datum/outfit/job/roguetown/human/northern/border_reiver/midgear)
 	var/obj/item/organ/eyes/organ_eyes = getorgan(/obj/item/organ/eyes)
 	if(organ_eyes)
@@ -203,7 +148,7 @@
 	update_hair()
 	update_body()
 	var/obj/item/bodypart/head/head = get_bodypart(BODY_ZONE_HEAD)
-	head.sellprice = 15 // Not much
+	head.sellprice = HEAD_BOUNTY_REIVER
 
 /datum/outfit/job/roguetown/human/northern/border_reiver/midgear/pre_equip(mob/living/carbon/human/H)
 	..()
@@ -218,13 +163,13 @@
 	ADD_TRAIT(H, TRAIT_STEELHEARTED, TRAIT_GENERIC)
 	H.STASTR = rand(12,14)
 	H.STASPD = rand(12,14)
-	H.STACON = rand(11,12)
-	H.STAWIL = rand(11,12)
+	H.STACON = 8
+	H.STAWIL = 8
 	H.STAPER = rand(10,11)
 	H.STAINT = rand(9,10)
 	//Chest Gear
 	add_random_reiver_cloak(H)
-	shirt = /obj/item/clothing/suit/roguetown/armor/gambeson/lord/heavy
+	shirt = /obj/item/clothing/suit/roguetown/armor/gambeson/lord
 	add_random_reiver_armor(H)
 	//Head Gear
 	neck = /obj/item/clothing/neck/roguetown/leather
@@ -274,37 +219,28 @@
 			r_hand = /obj/item/rogueweapon/spear/short
 
 /mob/living/carbon/human/species/human/northern/border_reiver/lowgear
-	aggressive=1
-	rude = TRUE
-	mode = NPC_AI_IDLE
-	faction = list("reiver")
+	ai_controller = /datum/ai_controller/human_npc
+	faction = list(FACTION_REIVER)
 	ambushable = FALSE
 	cmode = 1
 	setparrytime = 30
-	flee_in_pain = TRUE
 	a_intent = INTENT_HELP
 	d_intent = INTENT_PARRY
 	possible_mmb_intents = list(INTENT_BITE, INTENT_JUMP, INTENT_KICK, INTENT_SPECIAL)
-	possible_rmb_intents = list(
-		/datum/rmb_intent/feint,\
-		/datum/rmb_intent/aimed,\
-		/datum/rmb_intent/strong,\
-		/datum/rmb_intent/riposte,\
-		/datum/rmb_intent/weak
-	)
 
 /mob/living/carbon/human/species/human/northern/border_reiver/lowgear/ambush
-	aggressive=1
-	wander = TRUE
 
 /mob/living/carbon/human/species/human/northern/border_reiver/lowgear/after_creation()
 	..()
+	AddComponent(/datum/component/ai_aggro_system)
+	SEND_SIGNAL(src, COMSIG_MOB_MODIFY_AGGRO_LINES, GLOB.highwayman_aggro, TRUE)
 	job = "Border Reiver"
 	ADD_TRAIT(src, TRAIT_NOMOOD, TRAIT_GENERIC)
 	ADD_TRAIT(src, TRAIT_NOHUNGER, TRAIT_GENERIC)
 	ADD_TRAIT(src, TRAIT_LEECHIMMUNE, INNATE_TRAIT)
 	ADD_TRAIT(src, TRAIT_BREADY, TRAIT_GENERIC)
 	ADD_TRAIT(src, TRAIT_MEDIUMARMOR, TRAIT_GENERIC)
+	ADD_TRAIT(src, TRAIT_NPC_EXAMINE, TRAIT_GENERIC)
 	equipOutfit(new /datum/outfit/job/roguetown/human/northern/border_reiver/lowgear)
 	var/obj/item/organ/eyes/organ_eyes = getorgan(/obj/item/organ/eyes)
 	if(organ_eyes)
@@ -312,7 +248,7 @@
 	update_hair()
 	update_body()
 	var/obj/item/bodypart/head/head = get_bodypart(BODY_ZONE_HEAD)
-	head.sellprice = 15 // Not much
+	head.sellprice = HEAD_BOUNTY_REIVER
 
 /datum/outfit/job/roguetown/human/northern/border_reiver/lowgear/pre_equip(mob/living/carbon/human/H)
 	H.adjust_skillrank(/datum/skill/combat/whipsflails, 3, TRUE)
@@ -328,13 +264,13 @@
 	ADD_TRAIT(H, TRAIT_STEELHEARTED, TRAIT_GENERIC)
 	H.STASTR = rand(12,13)
 	H.STASPD = rand(12,13)
-	H.STACON = rand(10,11)
-	H.STAWIL = rand(10,11)
+	H.STACON = 8
+	H.STAWIL = 8
 	H.STAPER = rand(9,10)
 	H.STAINT = rand(8,9)
 	//Chest Gear
 	add_random_reiver_cloak(H)
-	shirt = /obj/item/clothing/suit/roguetown/armor/gambeson/lord
+	shirt = /obj/item/clothing/suit/roguetown/armor/gambeson/lord/light
 	//Head Gear
 	neck = /obj/item/clothing/neck/roguetown/leather
 	add_random_reiver_lowgearhelmet(H)
@@ -368,38 +304,28 @@
 			l_hand = /obj/item/flashlight/flare/torch/prelit
 
 /mob/living/carbon/human/species/human/northern/border_reiver/highgear
-	aggressive=1
-	rude = TRUE
-	mode = NPC_AI_IDLE
-	faction = list("reiver")
+	ai_controller = /datum/ai_controller/human_npc
+	faction = list(FACTION_REIVER)
 	ambushable = FALSE
 	cmode = 1
 	setparrytime = 30
-	flee_in_pain = TRUE
 	a_intent = INTENT_HELP
 	d_intent = INTENT_PARRY
 	possible_mmb_intents = list(INTENT_BITE, INTENT_JUMP, INTENT_KICK, INTENT_SPECIAL)
-	possible_rmb_intents = list(
-		/datum/rmb_intent/feint,\
-		/datum/rmb_intent/aimed,\
-		/datum/rmb_intent/strong,\
-		/datum/rmb_intent/riposte,\
-		/datum/rmb_intent/weak
-	)
-	npc_max_jump_stamina = 0
 
 /mob/living/carbon/human/species/human/northern/border_reiver/highgear/ambush
-	aggressive=1
-	wander = TRUE
 
 /mob/living/carbon/human/species/human/northern/border_reiver/highgear/after_creation()
 	..()
+	AddComponent(/datum/component/ai_aggro_system)
+	SEND_SIGNAL(src, COMSIG_MOB_MODIFY_AGGRO_LINES, GLOB.highwayman_aggro, TRUE)
 	job = "Border Reiver"
 	ADD_TRAIT(src, TRAIT_NOMOOD, TRAIT_GENERIC)
 	ADD_TRAIT(src, TRAIT_NOHUNGER, TRAIT_GENERIC)
 	ADD_TRAIT(src, TRAIT_LEECHIMMUNE, INNATE_TRAIT)
 	ADD_TRAIT(src, TRAIT_BREADY, TRAIT_GENERIC)
 	ADD_TRAIT(src, TRAIT_MEDIUMARMOR, TRAIT_GENERIC)
+	ADD_TRAIT(src, TRAIT_NPC_EXAMINE, TRAIT_GENERIC)
 	equipOutfit(new /datum/outfit/job/roguetown/human/northern/border_reiver/highgear)
 	var/obj/item/organ/eyes/organ_eyes = getorgan(/obj/item/organ/eyes)
 	if(organ_eyes)
@@ -407,7 +333,7 @@
 	update_hair()
 	update_body()
 	var/obj/item/bodypart/head/head = get_bodypart(BODY_ZONE_HEAD)
-	head.sellprice = 15 // Not much
+	head.sellprice = HEAD_BOUNTY_REIVER
 
 /datum/outfit/job/roguetown/human/northern/border_reiver/highgear/pre_equip(mob/living/carbon/human/H)
 	..()
@@ -423,13 +349,13 @@
 	ADD_TRAIT(H, TRAIT_HEAVYARMOR, TRAIT_GENERIC)
 	H.STASTR = rand(13,14)
 	H.STASPD = rand(13,14)
-	H.STACON = rand(12,13)
-	H.STAWIL = rand(12,13)
+	H.STACON = 10
+	H.STAWIL = 10
 	H.STAPER = rand(11,12)
 	H.STAINT = rand(10,11)
 	//Chest Gear
 	add_random_reiver_cloak(H)
-	shirt = /obj/item/clothing/suit/roguetown/armor/gambeson/lord/heavy
+	shirt = /obj/item/clothing/suit/roguetown/armor/gambeson/lord
 	armor = /obj/item/clothing/suit/roguetown/armor/chainmail/hauberk/heavy
 	//Head Gear
 	neck = /obj/item/clothing/neck/roguetown/chaincoif
@@ -453,7 +379,7 @@
 /mob/living/simple_animal/hostile/rogue/border_reiver_crossbow
 	name = "Reiver Crossbowman"
 	icon = 'icons/mob/border_reivers.dmi'
-	faction = list("reiver")
+	faction = list(FACTION_REIVER)
 	icon_state = "reiver_crossbow"
 	icon_living = "reiver_crossbow"
 	icon_dead = "reiver_crossbow_dead"
@@ -490,7 +416,7 @@
 
 /mob/living/simple_animal/hostile/rogue/border_reiver_lance_rider
 	name = "Reiver Rider"
-	faction = list("reiver")
+	faction = list(FACTION_REIVER)
 	icon = 'icons/roguetown/mob/monster/reiver_rider.dmi'
 	base_intents = list(/datum/intent/simple/spear/reiver_rider_lancer,)
 	icon_state = "lance_rider"

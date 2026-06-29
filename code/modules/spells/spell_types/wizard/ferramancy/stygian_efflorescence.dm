@@ -34,12 +34,13 @@
 	charge_slowdown = CHARGING_SLOWDOWN_NONE
 	charge_sound = 'sound/magic/charging.ogg'
 	cooldown_time = 6 SECONDS
-	is_implement_scaled_spell = TRUE
 	attunement_school = ASPECT_NAME_FERRAMANCY
 
 	associated_skill = /datum/skill/magic/arcane
 	spell_tier = 2
 	spell_impact_intensity = SPELL_IMPACT_MEDIUM
+
+	spell_requirements = SPELL_REQUIRES_NO_ANTIMAGIC | SPELL_REQUIRES_HUMAN
 
 	var/spread_step = 12
 
@@ -50,6 +51,9 @@
 		base_angle = Get_Angle(user, target)
 	var/center_index = (projectiles_per_fire + 1) / 2
 	to_fire.Angle = base_angle + ((iteration - center_index) * spread_step)
+	// Only the center shard can roll for stab crit
+	if(iteration != center_index)
+		to_fire.woundclass = null
 
 // --- Stygian projectile ---
 
@@ -59,26 +63,30 @@
 	range = 5
 	icon = 'icons/obj/magic_projectiles.dmi'
 	icon_state = "stygian"
-	damage = 35
+	damage = 34
 	damage_type = BRUTE
 	woundclass = BCLASS_STAB
 	armor_penetration = PEN_LIGHT
 	npc_simple_damage_mult = 1.5
 	speed = MAGE_PROJ_SLOW
 	accuracy = 65
-	flag = "piercing"
-	ricochets_max = 4
-	ricochet_chance = 50
-	ricochet_auto_aim_angle = 40
-	ricochet_auto_aim_range = 5
-	ricochet_incidence_leeway = 50
+	flag = "stab"
 	hitsound = 'sound/combat/hits/bladed/genstab (1).ogg'
-	var/reduced_damage = 19
+	var/reduced_damage = 18
 
 /obj/projectile/energy/stygian/arc
 	name = "arced stygian harpe"
-	damage = 29
+	damage = 26
 	arcshot = TRUE
+
+/obj/projectile/energy/stygian/prehit(atom/target)
+	if(ismob(target))
+		var/mob/living/M = target
+		if(M.mob_timers[MT_STYGIAN] && world.time < M.mob_timers[MT_STYGIAN] + STYGIAN_DR_DURATION)
+			damage = reduced_damage
+		else
+			M.mob_timers[MT_STYGIAN] = world.time
+	return ..()
 
 /obj/projectile/energy/stygian/on_hit(target)
 	if(ismob(target))
@@ -88,10 +96,6 @@
 			playsound(get_turf(target), 'sound/magic/magic_nulled.ogg', 100)
 			qdel(src)
 			return BULLET_ACT_BLOCK
-		if(M.mob_timers[MT_STYGIAN] && world.time < M.mob_timers[MT_STYGIAN] + STYGIAN_DR_DURATION)
-			damage = reduced_damage
-		else
-			M.mob_timers[MT_STYGIAN] = world.time
 	. = ..()
 
 #undef MT_STYGIAN

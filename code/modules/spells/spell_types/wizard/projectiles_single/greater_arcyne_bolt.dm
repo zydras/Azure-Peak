@@ -32,15 +32,16 @@
 	associated_skill = /datum/skill/magic/arcane
 	spell_tier = 2
 	spell_impact_intensity = SPELL_IMPACT_MEDIUM
-	is_implement_scaled_spell = TRUE
 	attunement_school = ASPECT_NAME_KINESIS
+
+	spell_requirements = SPELL_REQUIRES_NO_ANTIMAGIC | SPELL_REQUIRES_HUMAN
 
 /obj/projectile/magic/greater_arcyne_bolt
 	name = "greater arcyne bolt"
 	icon = 'icons/obj/magic_projectiles.dmi'
 	icon_state = "arcyne_bolt"
 	guard_deflectable = TRUE
-	damage = 40
+	damage = 54
 	damage_type = BRUTE
 	flag = "blunt"
 	woundclass = BCLASS_BLUNT
@@ -53,10 +54,11 @@
 
 /obj/projectile/magic/greater_arcyne_bolt/arc
 	name = "arced greater arcyne bolt"
-	damage = 50
+	damage = 41
 	arcshot = TRUE
 
 /obj/projectile/magic/greater_arcyne_bolt/on_hit(target)
+	hitsound = pick('sound/combat/hits/blunt/shovel_hit.ogg', 'sound/combat/hits/blunt/shovel_hit2.ogg', 'sound/combat/hits/blunt/shovel_hit3.ogg')
 	if(ismob(target))
 		var/mob/M = target
 		if(M.anti_magic_check())

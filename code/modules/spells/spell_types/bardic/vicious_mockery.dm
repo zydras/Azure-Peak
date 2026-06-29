@@ -37,6 +37,7 @@ GLOBAL_LIST_INIT(mockery_insults, list(
 
 	invocation_type = INVOCATION_SHOUT
 	charge_required = TRUE
+	weapon_cast_penalized = FALSE
 	charge_time = CHARGETIME_POKE
 	charge_slowdown = CHARGING_SLOWDOWN_NONE
 	cooldown_time = MOCKERY_COOLDOWN
@@ -48,7 +49,7 @@ GLOBAL_LIST_INIT(mockery_insults, list(
 	var/mob/living/carbon/human/H = owner
 	if(!ishuman(H))
 		return
-	H.say(pick(GLOB.mockery_insults), forced = "spell")
+	H.say(pick(GLOB.mockery_insults), forced = "spell", language = /datum/language/common)
 	. = ..()
 
 // ---- Mockery Projectile ----
@@ -76,6 +77,8 @@ GLOBAL_LIST_INIT(mockery_insults, list(
 			visible_message(span_warning("The insult falls on deaf ears!"))
 			qdel(src)
 			return BULLET_ACT_BLOCK
+		if(out_of_effective_range())
+			return
 		// Stack the debuff
 		var/datum/status_effect/debuff/mockery_stack/existing = M.has_status_effect(/datum/status_effect/debuff/mockery_stack)
 		if(existing)
@@ -140,7 +143,6 @@ GLOBAL_LIST_INIT(mockery_insults, list(
 	linked_alert.name = "Vicious Mockery ([stacks]/[MOCKERY_STACKS_MAX])"
 
 /datum/status_effect/debuff/mockery_stack/on_remove()
-	remove_stack_effects()
 	to_chat(owner, span_info("The sting of mockery fades."))
 	. = ..()
 

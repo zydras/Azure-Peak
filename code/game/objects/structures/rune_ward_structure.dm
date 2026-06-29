@@ -40,6 +40,8 @@
 				return
 			if(L.is_jumping)
 				return
+			if(L.pulledby) // No grabbing someone into rune
+				return
 			if(L.mob_timers[RUNE_WARD_IMMUNITY_KEY] && world.time < L.mob_timers[RUNE_WARD_IMMUNITY_KEY])
 				return
 	else
@@ -81,10 +83,9 @@
 	icon_state = RUNE_WARD_ICON_STUN
 
 /obj/structure/rune_ward/stun/rune_effect(mob/living/L)
-	to_chat(L, span_danger("<B>The rune locks your muscles in place!</B>"))
+	to_chat(L, span_danger("<B>The rune erupts with arcyne lightning!</B>"))
 	playsound(src, 'sound/magic/lightning.ogg', 80, TRUE)
-	L.electrocute_act(10, src, flags = SHOCK_NOGLOVES)
-	L.Paralyze(6 SECONDS)
+	L.lightning_shock(src)
 
 /obj/structure/rune_ward/fire
 	name = "flame rune"
@@ -94,9 +95,8 @@
 	to_chat(L, span_danger("<B>The rune erupts in flames!</B>"))
 	playsound(src, pick('sound/misc/explode/incendiary (1).ogg', 'sound/misc/explode/incendiary (2).ogg'), 80, TRUE)
 	new /obj/effect/hotspot(get_turf(src))
-	L.Knockdown(30)
-	L.Slowdown(2)
-	L.adjust_fire_stacks(5)
+	L.Slowdown(4)
+	L.adjust_fire_stacks(6)
 	L.ignite_mob()
 
 /obj/structure/rune_ward/chill
@@ -107,8 +107,8 @@
 	to_chat(L, span_danger("<B>Frost erupts from the rune and seizes your limbs!</B>"))
 	playsound(src, 'sound/spellbooks/crystal.ogg', 80, TRUE)
 	new /obj/effect/temp_visual/trapice(get_turf(src))
-	L.Paralyze(20)
-	L.adjustFireLoss(30)
+	L.Slowdown(4)
+	L.adjustFireLoss(10)
 	apply_frost_stack(L, 4)
 
 /obj/structure/rune_ward/damage
@@ -121,8 +121,7 @@
 	playsound(src, 'sound/magic/blade_burst.ogg', 80, TRUE)
 	playsound(src, pick('sound/combat/hits/bladed/genstab (1).ogg', 'sound/combat/hits/bladed/genstab (2).ogg', 'sound/combat/hits/bladed/genstab (3).ogg'), 80, TRUE)
 	new /obj/effect/temp_visual/blade_burst(get_turf(src))
-	L.Knockdown(30)
-	L.Slowdown(2)
+	L.Slowdown(4)
 	var/mob/living/carbon/human/owner = owner_ref?.resolve()
 	if(ishuman(owner) && ishuman(L))
 		arcyne_strike(owner, L, null, rune_damage, BODY_ZONE_CHEST, \

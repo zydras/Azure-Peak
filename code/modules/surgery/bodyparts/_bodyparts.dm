@@ -216,24 +216,24 @@
 				used_time -= (user.get_skill_level(/datum/skill/labor/butchering) * 30)
 			visible_message("[user] begins to butcher \the [src].")
 			playsound(src, 'sound/foley/gross.ogg', 100, FALSE)
-			var/steaks = 1
-			switch(user.get_skill_level(/datum/skill/labor/butchering))
-				if(3)
-					steaks = 2
-				if(4 to 5)
-					steaks = 3
-				if(6)
-					steaks = 4 // the steaks have never been higher
+
+			var/butcher_skill = user.get_skill_level(/datum/skill/labor/butchering)
 			var/amt2raise = user.STAINT/3
 			var/produced_steaks = list()
+
 			if(do_after(user, used_time, target = src))
-				for(steaks, steaks>0, steaks--)
-					var/obj/item/reagent_containers/food/snacks/rogue/meat/steak/new_steak = new(get_turf(src))
-					produced_steaks += new_steak
+				var/obj/item/reagent_containers/food/snacks/rogue/meat/humanoid/new_steak = new(get_turf(src))
+				produced_steaks += new_steak
+				// 10% per level starting from apprentice
+				var/second_chance = max(0, (butcher_skill - 1) * 10)
+				if(prob(second_chance))
+					var/obj/item/reagent_containers/food/snacks/rogue/meat/humanoid/second_steak = new(get_turf(src))
+					produced_steaks += second_steak
 				if(rotted)
-					for(var/obj/item/reagent_containers/food/snacks/rogue/meat/steak/putrid in produced_steaks)
+					for(var/obj/item/reagent_containers/food/snacks/rogue/meat/humanoid/putrid in produced_steaks)
 						putrid.become_rotten()
-				new /obj/effect/decal/cleanable/blood/splatter(get_turf(src))
+				var/datum/component/decal/blood/blood_decal = GetComponent(/datum/component/decal/blood)
+				new /obj/effect/decal/cleanable/blood/splatter(get_turf(src), blood_decal?.blood_color || BLOOD_COLOR_RED)
 				user.mind.add_sleep_experience(/datum/skill/labor/butchering, amt2raise, FALSE)
 				qdel(src)
 	..()
@@ -243,6 +243,9 @@
 		var/mob/living/carbon/human/H = C
 		if(HAS_TRAIT(C, TRAIT_LIMBATTACHMENT))
 			if(!H.get_bodypart(body_zone) && !animal_origin)
+				if(HAS_TRAIT(C, TRAIT_IRONMAN)) // there we go, figured a way to give this a delay, now ima go sleep
+					if(!do_after(C, 20 SECONDS))
+						return
 				if(H == user)
 					H.visible_message(span_warning("[H] jams [src] into [H.p_their()] empty socket!"),\
 					span_notice("I force [src] into my empty socket, and it locks into place!"))
@@ -405,9 +408,9 @@
 	if(required_status && (status != required_status)) //So we can only heal certain kinds of limbs, ie robotic vs organic.
 		return
 	if(owner && owner.has_status_effect(/datum/status_effect/buff/fortify))
-		brute *= 1.5
-		burn *= 1.5
-		stamina *= 1.5
+		brute *= 1.3
+		burn *= 1.3
+		stamina *= 1.3
 
 	brute_dam	= round(max(brute_dam - brute, 0), DAMAGE_PRECISION)
 	burn_dam	= round(max(burn_dam - burn, 0), DAMAGE_PRECISION)
@@ -709,15 +712,29 @@
 			. += marking_overlays
 
 	// Organ overlays
-	if(!skeletonized && draw_organ_features)
+	if(draw_organ_features)
 		for(var/obj/item/organ/organ as anything in get_visible_organs())
+			if(skeletonized)
+				// Check if this organ has an accessory that persists through skeletonize
+				var/should_draw = FALSE
+				if(organ.accessory_type)
+					var/datum/sprite_accessory/accessory = SPRITE_ACCESSORY(organ.accessory_type)
+					if(accessory && accessory.persists_through_skeletonize)
+						should_draw = TRUE
+				if(!should_draw)
+					continue
 			var/mutable_appearance/organ_appearance = organ.get_bodypart_overlay(src)
 			if(organ_appearance)
 				. += organ_appearance
 
 	// Feature overlays
-	if(!skeletonized && draw_bodypart_features)
+	if(draw_bodypart_features)
 		for(var/datum/bodypart_feature/feature as anything in bodypart_features)
+			// Skip non-persistent features when skeletonized
+			if(skeletonized)
+				var/datum/sprite_accessory/accessory/A = SPRITE_ACCESSORY(feature.accessory_type)
+				if(!A || !A.persists_through_skeletonize)
+					continue
 			var/overlays = feature.get_bodypart_overlay(src)
 			if(!overlays)
 				continue
@@ -820,7 +837,7 @@
 	if(owner.hud_used)
 		var/atom/movable/screen/inventory/hand/L = owner.hud_used.hand_slots["[held_index]"]
 		if(L)
-			L.update_icon()
+			L.update_hand_vis()
 
 /obj/item/bodypart/l_arm/monkey
 	icon = 'icons/mob/animal_parts.dmi'
@@ -877,7 +894,7 @@
 	if(owner.hud_used)
 		var/atom/movable/screen/inventory/hand/R = owner.hud_used.hand_slots["[held_index]"]
 		if(R)
-			R.update_icon()
+			R.update_hand_vis()
 
 /obj/item/bodypart/r_arm/monkey
 	icon = 'icons/mob/animal_parts.dmi'

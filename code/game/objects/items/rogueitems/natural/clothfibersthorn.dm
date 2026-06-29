@@ -139,7 +139,7 @@
 #ifdef TESTSERVER
 
 /client/verb/bloodnda()
-	set category = "DEBUGTEST"
+	set category = "Debug.Test"
 	set name = "bloodnda"
 	set desc = ""
 
@@ -160,6 +160,7 @@
 	desc = "A bolt of woven fibers. Useful as bandages and in dozens upon dozens of crafts."
 	force = 0
 	throwforce = 0
+	flags_ai_inventory = AI_ITEM_BANDAGE
 	obj_flags = null
 	bundling_time = 2 SECONDS
 	firefuel = 5 MINUTES
@@ -173,6 +174,7 @@
 	spitoutmouth = FALSE
 	experimental_inhand = TRUE
 	bundletype = /obj/item/natural/bundle/cloth
+	dropshrink = 0.9
 	sellprice = 4
 	detail_tag = "_soaked"
 	var/wet = 0
@@ -453,13 +455,13 @@
 		if(L.m_intent == MOVE_INTENT_RUN)
 			prob2break = 100
 		if(prob(prob2break))
-			if(!(HAS_TRAIT(L, TRAIT_AZURENATIVE) || (HAS_TRAIT(L, TRAIT_WOODWALKER)) && L.m_intent != MOVE_INTENT_RUN))
+			if(L.m_intent == MOVE_INTENT_RUN || !(HAS_TRAIT(L, TRAIT_AZURENATIVE) || HAS_TRAIT(L, TRAIT_NOPVE) || HAS_TRAIT(L, TRAIT_WOODWALKER) || (HAS_TRAIT(L, TRAIT_BOGWALKER) && istype(get_area(L), /area/rogue/outdoors/bog))))
 				playsound(src,'sound/items/seedextract.ogg', 100, FALSE)
-			qdel(src)
-			if (L.alpha == 0 && L.rogue_sneaking) // not anymore you're not
-				L.update_sneak_invis(TRUE)
-			if(!HAS_TRAIT(L, TRAIT_WOODWALKER))
-				L.consider_ambush()
+				qdel(src)
+				if (L.alpha == 0 && L.rogue_sneaking) // not anymore you're not
+					L.update_sneak_invis(TRUE)
+				if(!HAS_TRAIT(L, TRAIT_WOODWALKER))
+					L.consider_ambush()
 
 /obj/item/natural/bundle/fibers
 	name = "fiber bundle"
@@ -541,6 +543,7 @@
 	icon2step = 10
 	grid_width = 32
 	grid_height = 32
+	dropshrink = 0.9
 
 /obj/item/natural/bundle/stick
 	name = "bundle of sticks"

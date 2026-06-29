@@ -26,11 +26,12 @@
 	charge_slowdown = CHARGING_SLOWDOWN_NONE
 	charge_sound = 'sound/magic/charging_fire.ogg'
 	cooldown_time = 5.5 SECONDS
-	is_implement_scaled_spell = TRUE
 	attunement_school = ASPECT_NAME_PYROMANCY
 
 	associated_skill = /datum/skill/magic/arcane
 	spell_impact_intensity = SPELL_IMPACT_LOW
+
+	spell_requirements = SPELL_REQUIRES_NO_ANTIMAGIC | SPELL_REQUIRES_HUMAN
 
 /obj/projectile/magic/spitfire
 	name = "spitfire"
@@ -38,7 +39,7 @@
 	light_color = "#f8af07"
 	light_outer_range = 2
 	speed = MAGE_PROJ_MEDIUM
-	damage = 30
+	damage = 36
 	npc_simple_damage_mult = 2
 	accuracy = 40
 	damage_type = BURN
@@ -49,7 +50,7 @@
 
 /obj/projectile/magic/spitfire/arc
 	name = "arced spitfire"
-	damage = 23
+	damage = 27
 	arcshot = TRUE
 
 /obj/projectile/magic/spitfire/on_hit(target)
@@ -66,6 +67,8 @@
 			playsound(get_turf(target), 'sound/magic/magic_nulled.ogg', 100)
 			qdel(src)
 			return BULLET_ACT_BLOCK
+		if(out_of_effective_range())
+			return
 		if(has_frost_stacks(M))
 			remove_frost_stack(M)
 			visible_message(span_warning("The fire thaws the frost on [target]!"))
