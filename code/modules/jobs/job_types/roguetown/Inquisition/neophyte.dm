@@ -83,6 +83,7 @@
 	gloves = /obj/item/clothing/gloves/roguetown/otavan/psygloves
 	cloak = /obj/item/clothing/cloak/tabard/psydontabard/black
 	wrists = /obj/item/clothing/neck/roguetown/psicross/silver
+	mask = /obj/item/clothing/head/roguetown/roguehood/psydon/black
 	neck = /obj/item/roguekey/inquisitionmanor
 	belt = /obj/item/storage/belt/rogue/leather/black
 	beltr = /obj/item/natural/feather
